@@ -1,9 +1,0 @@
-test_busy_port_remains_owned_by_existing_listener (test_installation.InstallationTests.test_busy_port_remains_owned_by_existing_listener) ... ok
-test_existing_private_config_is_preserved_exactly (test_installation.InstallationTests.test_existing_private_config_is_preserved_exactly) ... ok
-test_new_config_disables_optional_model_and_uses_local_voice (test_installation.InstallationTests.test_new_config_disables_optional_model_and_uses_local_voice) ... ok
-test_setup_refuses_an_existing_non_environment_directory (test_installation.InstallationTests.test_setup_refuses_an_existing_non_environment_directory) ... ok
-
-----------------------------------------------------------------------
-Ran 4 tests in 0.061s
-
-OK

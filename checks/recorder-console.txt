@@ -1,8 +1,0 @@
-[emotion][sim] Happy
-[speech] Let us try the next step.
-[action][sim] nod
-[emotion][sim] Neutral
-[speech] Please look to my left.
-[action][sim] look_left
-[speech] Then we can continue.
-[action][sim] blink
