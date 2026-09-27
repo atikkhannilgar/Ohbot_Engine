@@ -114,8 +114,5 @@ Choose the configured provider and a known speech backend/voice. `--controller h
 
 Retain exact software/model identifiers, prompts, settings and output. Pin the speech option when voice consistency matters; fallback can change the voice or replace audio with simulated pacing. Preview shows commanded positions without physical feedback. Interruption records distinguish completed and incomplete utterances, but do not identify the exact audible cutoff.
 
-Use supervised physical operation and a stop procedure. Explain transmission of participant text/audio to providers in consent. Motor limits are not a physical safety evaluation. License and maintenance details are pending author completion.
+Use supervised physical operation and a stop procedure. Explain transmission of participant text/audio to providers in consent. Motor limits are not a physical safety evaluation.
 
-## Development and validation tools
-
-AI coding assistance was used for source inspection, installation changes, regression fixes, the recorder and test execution. The recorded checks use scripted inputs and do not establish live-model or physical performance. This draft is prepared for anonymous sharing; personal accounts, local paths and private config are not included.
