@@ -1,0 +1,76 @@
+# OhBot Behaviors Engine
+#
+# Full stack (engine in Docker + GUI on host, auto-attached):
+#   ./docker/compose up --build
+#
+# Engine only (python -m obot --serve):
+#   ./docker/compose up --engine-only
+#   # or: docker compose up --build
+#
+# Stop engine:
+#   docker compose down
+#
+# Edit API keys in ./config.json (mounted into the container).
+
+services:
+  obot:
+    build: .
+    image: ohbot-behaviors-engine:latest
+    container_name: ohbot-engine
+    ports:
+      - "8765:8765"
+    volumes:
+      # Your config (API keys, TTS, gesture settings)
+      - ./config.json:/app/config.json
+      - ./system_prompt.txt:/app/system_prompt.txt:ro
+      - ./example_script.txt:/app/example_script.txt:ro
+      # Downloaded Piper/Kokoro/Vosk models persist here
+      - ./ohbotData:/app/ohbotData
+    environment:
+      - TZ=${TZ:-UTC}
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import socket; s=socket.create_connection(('127.0.0.1',8765),2); s.close()",
+        ]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 5s
+    # Default: WebSocket control server for the GUI
+    command: ["python", "-m", "obot", "--serve", "--host", "0.0.0.0", "--port", "8765"]
+
+  # One-shot demo (no API key):  docker compose run --rm demo
+  demo:
+    profiles: ["demo"]
+    image: ohbot-behaviors-engine:latest
+    build: .
+    volumes:
+      - ./config.json:/app/config.json
+      - ./ohbotData:/app/ohbotData
+    command:
+      [
+        "python",
+        "-m",
+        "obot",
+        "--console",
+        "--text",
+        "Hello [Nod] (Happy) I am running in Docker.",
+      ]
+
+  # Interactive console chat:  docker compose run --rm -it console
+  console:
+    profiles: ["console"]
+    image: ohbot-behaviors-engine:latest
+    build: .
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./config.json:/app/config.json
+      - ./system_prompt.txt:/app/system_prompt.txt:ro
+      - ./ohbotData:/app/ohbotData
+    command: ["python", "-m", "obot", "--console"]

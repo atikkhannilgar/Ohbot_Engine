@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# Drop-in wrapper: `./docker/compose up` == engine (Docker) + GUI (host, auto-attach).
+#
+# WARNING (macOS): Docker has NO microphone/speakers. For voice use:
+#   ./docker/run-host.sh
+#
+# Plain `docker compose up` only starts the engine. Avalonia cannot open a native
+# window from inside Docker Desktop on macOS, so GUI launch stays on the host —
+# this wrapper is the one command that does both (without mic/speakers).
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT"
+
+if [[ "${1:-}" == "up" ]]; then
+  shift
+  BUILD_ARGS=()
+  ENGINE_ONLY=0
+  PASSTHRU=()
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --build|-b) BUILD_ARGS+=(--build); shift ;;
+      --engine-only) ENGINE_ONLY=1; shift ;;
+      -d|--detach)
+        # Full stack always detaches the engine, then opens the GUI in the foreground.
+        shift
+        ;;
+      -h|--help)
+        cat <<'EOF'
+Usage: ./docker/compose up [--build] [--engine-only]
+
+  Starts python -m obot --serve in Docker, then opens the desktop GUI
+  on this machine already attached to ws://127.0.0.1:8765.
+
+  WARNING: On macOS, Docker has no mic/speakers. Prefer:
+    ./docker/run-host.sh
+
+  --build         Rebuild the engine image first
+  --engine-only   Only the container (no GUI)
+EOF
+        exit 0
+        ;;
+      *) PASSTHRU+=("$1"); shift ;;
+    esac
+  done
+  echo "[compose] NOTE: Docker engine has no Mac mic/speakers. For voice: ./docker/run-host.sh" >&2
+  if [[ "$ENGINE_ONLY" -eq 1 ]]; then
+    exec "$ROOT/docker/start.sh" --engine-only "${BUILD_ARGS[@]}"
+  fi
+  exec "$ROOT/docker/start.sh" "${BUILD_ARGS[@]}"
+fi
+
+# All other compose subcommands (down, logs, ps, …) go to real docker compose.
+exec docker compose "$@"

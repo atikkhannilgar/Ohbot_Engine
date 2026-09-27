@@ -1,0 +1,11 @@
+  Determining projects to restore...
+  Restored <repository>/gui/ObotControl.App/ObotControl.App.csproj (in 1,42 sec).
+  1 of 2 projects are up-to-date for restore.
+  ObotControl.Core -> <repository>/gui/ObotControl.Core/bin/Debug/net10.0/ObotControl.Core.dll
+  ObotControl.App -> <repository>/gui/ObotControl.App/bin/Debug/net10.0/ObotControl.App.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:04.52

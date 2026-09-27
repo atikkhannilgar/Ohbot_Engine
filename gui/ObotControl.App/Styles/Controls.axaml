@@ -1,0 +1,260 @@
+<!--
+  Reusable control styles, driven entirely by Styles/Tokens.axaml.
+
+  Views opt in with a class, e.g. <Button Classes="primary"> or <Border Classes="card">,
+  instead of repeating a Background/Padding/CornerRadius on every element. Adding a new
+  page should not require inventing any new colours.
+-->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!-- ============================ Tooltips ============================ -->
+
+  <!-- Nearly every control here has a tooltip, so they must not be trigger-happy: half a
+       second longer than Avalonia's 400ms default before one appears. Dismissing an open
+       tooltip once the pointer drifts is handled in Views/ToolTipBehavior.cs. -->
+  <Style Selector=":is(Control)">
+    <Setter Property="ToolTip.ShowDelay" Value="900"/>
+  </Style>
+
+  <!-- ============================ Surfaces ============================ -->
+
+  <!-- The standard content panel: every settings group and page section uses this. -->
+  <Style Selector="Border.card">
+    <Setter Property="Background" Value="{StaticResource Surface}"/>
+    <Setter Property="BorderBrush" Value="{StaticResource BorderSubtle}"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="CornerRadius" Value="{StaticResource RadiusCard}"/>
+    <Setter Property="Padding" Value="{StaticResource CardPadding}"/>
+  </Style>
+
+  <!-- A recessed well: transcripts, log output, per-row detail inside a card. -->
+  <Style Selector="Border.inset">
+    <Setter Property="Background" Value="{StaticResource Inset}"/>
+    <Setter Property="BorderBrush" Value="{StaticResource BorderSubtle}"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="CornerRadius" Value="{StaticResource RadiusControl}"/>
+  </Style>
+
+  <Style Selector="Border.pill">
+    <Setter Property="CornerRadius" Value="{StaticResource RadiusPill}"/>
+    <Setter Property="Padding" Value="10,3"/>
+    <Setter Property="VerticalAlignment" Value="Center"/>
+  </Style>
+
+  <!-- ============================ Typography ============================ -->
+
+  <!-- Deliberately no bare "TextBlock" style: it would also hit the TextBlocks that
+       ContentPresenter generates inside button/combo-box templates. Everything below is
+       opt-in by class, so control templates keep the Fluent defaults. -->
+
+  <!-- Title of a card / page section. -->
+  <Style Selector="TextBlock.section">
+    <Setter Property="FontSize" Value="{StaticResource FontSizeTitle}"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+    <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+    <Setter Property="Margin" Value="0,0,0,2"/>
+  </Style>
+
+  <!-- Explanatory line under a section title. Wraps by default: these are sentences, and
+       a clipped half-sentence is worse than a second line. -->
+  <Style Selector="TextBlock.hint">
+    <Setter Property="FontSize" Value="{StaticResource FontSizeSmall}"/>
+    <Setter Property="Foreground" Value="{StaticResource TextMuted}"/>
+    <Setter Property="Margin" Value="0,0,0,4"/>
+    <Setter Property="TextWrapping" Value="Wrap"/>
+  </Style>
+
+  <!-- Field label to the left of an input. -->
+  <Style Selector="TextBlock.label">
+    <Setter Property="Foreground" Value="{StaticResource TextSecondary}"/>
+    <Setter Property="VerticalAlignment" Value="Center"/>
+  </Style>
+
+  <Style Selector="TextBlock.muted">
+    <Setter Property="Foreground" Value="{StaticResource TextMuted}"/>
+  </Style>
+
+  <Style Selector="TextBlock.caption">
+    <Setter Property="FontSize" Value="{StaticResource FontSizeCaption}"/>
+    <Setter Property="Foreground" Value="{StaticResource TextMuted}"/>
+  </Style>
+
+  <Style Selector="TextBlock.mono">
+    <Setter Property="FontFamily" Value="{StaticResource MonoFont}"/>
+    <Setter Property="FontSize" Value="{StaticResource FontSizeSmall}"/>
+  </Style>
+
+  <Style Selector="TextBlock.warn">
+    <Setter Property="Foreground" Value="{StaticResource Warning}"/>
+  </Style>
+
+  <!-- Numeric readout next to a slider: tabular so digits don't jitter while dragging. -->
+  <Style Selector="TextBlock.value">
+    <Setter Property="Foreground" Value="{StaticResource TextSecondary}"/>
+    <Setter Property="FontFamily" Value="{StaticResource MonoFont}"/>
+    <Setter Property="FontSize" Value="{StaticResource FontSizeSmall}"/>
+    <Setter Property="VerticalAlignment" Value="Center"/>
+    <Setter Property="HorizontalAlignment" Value="Right"/>
+    <Setter Property="TextWrapping" Value="NoWrap"/>
+  </Style>
+
+  <!-- ============================ Buttons ============================ -->
+
+  <Style Selector="Button">
+    <Setter Property="CornerRadius" Value="{StaticResource RadiusControl}"/>
+    <Setter Property="Padding" Value="14,7"/>
+    <Setter Property="FontSize" Value="{StaticResource FontSizeBody}"/>
+    <Setter Property="VerticalAlignment" Value="Center"/>
+    <Setter Property="Transitions">
+      <Transitions>
+        <BrushTransition Property="Background" Duration="0:0:0.12"/>
+      </Transitions>
+    </Setter>
+  </Style>
+
+  <!-- Primary: the one action the user most likely wants on this screen. Use sparingly. -->
+  <Style Selector="Button.primary">
+    <Setter Property="Background" Value="{StaticResource Accent}"/>
+    <Setter Property="Foreground" Value="{StaticResource TextOnAccent}"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+  </Style>
+  <Style Selector="Button.primary /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{StaticResource Accent}"/>
+  </Style>
+  <Style Selector="Button.primary:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{StaticResource AccentHover}"/>
+    <Setter Property="Foreground" Value="{StaticResource TextOnAccent}"/>
+  </Style>
+  <Style Selector="Button.primary:pressed /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{StaticResource AccentPressed}"/>
+  </Style>
+
+  <!-- Destructive / stop-the-robot actions. -->
+  <Style Selector="Button.danger">
+    <Setter Property="Background" Value="{StaticResource Danger}"/>
+    <Setter Property="Foreground" Value="{StaticResource TextOnAccent}"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+  </Style>
+  <Style Selector="Button.danger /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{StaticResource Danger}"/>
+  </Style>
+  <Style Selector="Button.danger:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{StaticResource DangerHover}"/>
+    <Setter Property="Foreground" Value="{StaticResource TextOnAccent}"/>
+  </Style>
+
+  <!-- Low-emphasis: refresh, test, secondary navigation. -->
+  <Style Selector="Button.ghost">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="Foreground" Value="{StaticResource TextSecondary}"/>
+    <Setter Property="BorderBrush" Value="{StaticResource BorderStrong}"/>
+    <Setter Property="BorderThickness" Value="1"/>
+  </Style>
+  <Style Selector="Button.ghost /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="Transparent"/>
+  </Style>
+  <Style Selector="Button.ghost:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{StaticResource SurfaceHover}"/>
+    <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+  </Style>
+
+  <!-- Square, glyph-only buttons (refresh, close, help). -->
+  <Style Selector="Button.icon">
+    <Setter Property="Padding" Value="0"/>
+    <Setter Property="Width" Value="32"/>
+    <Setter Property="Height" Value="32"/>
+    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    <Setter Property="VerticalContentAlignment" Value="Center"/>
+    <Setter Property="FontSize" Value="14"/>
+  </Style>
+
+  <!-- The big red one. Deliberately larger than everything around it. -->
+  <Style Selector="Button.stop">
+    <Setter Property="Padding" Value="18,9"/>
+    <Setter Property="FontWeight" Value="Bold"/>
+    <Setter Property="FontSize" Value="{StaticResource FontSizeTitle}"/>
+  </Style>
+
+  <!-- ============================ Inputs ============================ -->
+
+  <Style Selector="TextBox">
+    <Setter Property="CornerRadius" Value="{StaticResource RadiusControl}"/>
+    <Setter Property="FontSize" Value="{StaticResource FontSizeBody}"/>
+    <Setter Property="MinHeight" Value="32"/>
+  </Style>
+
+  <Style Selector="ComboBox">
+    <Setter Property="CornerRadius" Value="{StaticResource RadiusControl}"/>
+    <Setter Property="FontSize" Value="{StaticResource FontSizeBody}"/>
+    <Setter Property="MinHeight" Value="32"/>
+  </Style>
+
+  <Style Selector="NumericUpDown">
+    <Setter Property="CornerRadius" Value="{StaticResource RadiusControl}"/>
+    <Setter Property="FontSize" Value="{StaticResource FontSizeBody}"/>
+    <Setter Property="MinHeight" Value="32"/>
+  </Style>
+
+  <Style Selector="CheckBox">
+    <Setter Property="FontSize" Value="{StaticResource FontSizeBody}"/>
+    <Setter Property="MinHeight" Value="28"/>
+  </Style>
+
+  <Style Selector="Slider">
+    <Setter Property="VerticalAlignment" Value="Center"/>
+    <Setter Property="MinHeight" Value="28"/>
+  </Style>
+
+  <Style Selector="ProgressBar">
+    <Setter Property="Height" Value="6"/>
+    <Setter Property="CornerRadius" Value="3"/>
+    <Setter Property="Foreground" Value="{StaticResource Accent}"/>
+  </Style>
+
+  <!-- ============================ Navigation rail ============================ -->
+
+  <!-- The left tab strip is the app's primary navigation, so it reads as a rail
+       rather than as browser-style tabs. -->
+  <Style Selector="TabControl.rail">
+    <Setter Property="TabStripPlacement" Value="Left"/>
+    <Setter Property="Padding" Value="0"/>
+  </Style>
+
+  <Style Selector="TabControl.rail /template/ ItemsPresenter#PART_ItemsPresenter">
+    <Setter Property="Margin" Value="0,4,10,0"/>
+  </Style>
+
+  <Style Selector="TabControl.rail > TabItem">
+    <Setter Property="FontSize" Value="{StaticResource FontSizeBody}"/>
+    <Setter Property="FontWeight" Value="Normal"/>
+    <Setter Property="Foreground" Value="{StaticResource TextSecondary}"/>
+    <Setter Property="Padding" Value="14,10"/>
+    <Setter Property="Margin" Value="0,2"/>
+    <Setter Property="MinHeight" Value="40"/>
+    <Setter Property="CornerRadius" Value="{StaticResource RadiusControl}"/>
+  </Style>
+
+  <Style Selector="TabControl.rail > TabItem /template/ Border#PART_LayoutRoot">
+    <Setter Property="CornerRadius" Value="{StaticResource RadiusControl}"/>
+    <Setter Property="Transitions">
+      <Transitions>
+        <BrushTransition Property="Background" Duration="0:0:0.12"/>
+      </Transitions>
+    </Setter>
+  </Style>
+
+  <Style Selector="TabControl.rail > TabItem:pointerover /template/ Border#PART_LayoutRoot">
+    <Setter Property="Background" Value="{StaticResource SurfaceHover}"/>
+  </Style>
+
+  <Style Selector="TabControl.rail > TabItem:selected /template/ Border#PART_LayoutRoot">
+    <Setter Property="Background" Value="{StaticResource AccentSoft}"/>
+  </Style>
+
+  <Style Selector="TabControl.rail > TabItem:selected">
+    <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+  </Style>
+
+</Styles>

@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="ObotControl.App/ObotControl.App.csproj" />
+  <Project Path="ObotControl.Core.Tests/ObotControl.Core.Tests.csproj" />
+  <Project Path="ObotControl.Core/ObotControl.Core.csproj" />
+</Solution>

@@ -1,0 +1,14 @@
+# Optional: the AI gesture model (src/obot/ml + mlBehaviour/) -- runs audio
+# through the BEAT2-trained model and drives the Ohbot's servos directly.
+# Not required for the base chat pipeline; install this only on machines that
+# will train and/or run the model (torch has no ARM wheel on some older Pi
+# images -- check before installing on hardware).
+# Install the base project separately. Training does not require every TTS engine,
+# microphone recognizer, SSH client or physical robot driver.
+numpy>=1.26
+
+torch>=2.2
+scipy>=1.11
+soundfile>=0.12
+# Training-only (mlBehaviour/train.py loss curves); inference doesn't need it.
+matplotlib>=3.8

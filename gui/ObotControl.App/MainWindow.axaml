@@ -1,0 +1,245 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:ObotControl.Core.ViewModels;assembly=ObotControl.Core"
+        xmlns:core="clr-namespace:ObotControl.Core;assembly=ObotControl.Core"
+        xmlns:views="clr-namespace:ObotControl.App.Views"
+        x:Class="ObotControl.App.MainWindow"
+        x:DataType="vm:ShellViewModel"
+        Width="1240" Height="800" MinWidth="960" MinHeight="600"
+        Background="{StaticResource AppBg}"
+        Title="OhBot Control">
+
+  <Grid>
+    <!-- Shell: top bar, persistent face on the right, navigation rail + pages in the centre. -->
+    <DockPanel>
+
+      <!-- ===================== Top bar ===================== -->
+      <Border DockPanel.Dock="Top" Padding="16,10" Background="{StaticResource SurfaceRaised}"
+              BorderBrush="{StaticResource BorderSubtle}" BorderThickness="0,0,0,1">
+        <Grid ColumnDefinitions="Auto,*,Auto">
+
+          <!-- Brand -->
+          <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+            <Border Width="26" Height="26" CornerRadius="7" Background="{StaticResource Accent}">
+              <TextBlock Text="M" FontWeight="Bold" FontSize="14" Foreground="White"
+                         HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <StackPanel VerticalAlignment="Center">
+              <TextBlock Text="OhBot Control" FontWeight="SemiBold" FontSize="{StaticResource FontSizeTitle}"
+                         Foreground="{StaticResource TextPrimary}"/>
+              <TextBlock Text="Ms. Mimic behaviour engine" Classes="caption"/>
+            </StackPanel>
+          </StackPanel>
+
+          <!-- Connection status + actions -->
+          <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+
+            <Border Classes="pill" Background="{Binding IsConnected, Converter={x:Static views:Converters.ConnectionSoftBrush}}"
+                    ToolTip.Tip="{x:Static core:HelpText.Attach}">
+              <StackPanel Orientation="Horizontal" Spacing="7" VerticalAlignment="Center">
+                <Ellipse Width="8" Height="8" VerticalAlignment="Center"
+                         Fill="{Binding IsConnected, Converter={x:Static views:Converters.ConnectionBrush}}"/>
+                <TextBlock Text="{Binding ConnectionText}" FontSize="{StaticResource FontSizeSmall}"
+                           FontWeight="SemiBold" Foreground="{StaticResource TextPrimary}"/>
+              </StackPanel>
+            </Border>
+
+            <Button Content="Launch engine" Classes="primary" Command="{Binding LaunchEngineCommand}"
+                    ToolTip.Tip="{x:Static core:HelpText.LaunchEngine}"/>
+            <Button Content="Attach" Classes="ghost" Command="{Binding AttachCommand}"
+                    ToolTip.Tip="{x:Static core:HelpText.Attach}"/>
+            <Button Content="Disconnect" Classes="ghost" Command="{Binding DisconnectCommand}"
+                    ToolTip.Tip="{x:Static core:HelpText.Disconnect}"/>
+
+            <!-- Host/port/controller are set once and then forgotten, so they live behind a
+                 flyout instead of taking up permanent space in the top bar. -->
+            <Button Classes="ghost icon" Content="⚙" ToolTip.Tip="Connection settings: host, port and the controller used when launching the engine.">
+              <Button.Flyout>
+                <Flyout Placement="BottomEdgeAlignedRight">
+                  <StackPanel Width="290" Spacing="10" Margin="4">
+                    <TextBlock Text="Connection" Classes="section"/>
+                    <TextBlock Text="Where the engine is listening. Defaults are correct unless you started it yourself with a custom port."
+                               Classes="hint" TextWrapping="Wrap"/>
+                    <Grid ColumnDefinitions="70,*" RowDefinitions="Auto,Auto">
+                      <TextBlock Grid.Row="0" Grid.Column="0" Text="Host" Classes="label"/>
+                      <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Host}" Margin="0,0,0,8"
+                               ToolTip.Tip="{x:Static core:HelpText.Host}"/>
+                      <TextBlock Grid.Row="1" Grid.Column="0" Text="Port" Classes="label"/>
+                      <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Port}"
+                               ToolTip.Tip="{x:Static core:HelpText.Port}"/>
+                    </Grid>
+                    <TextBlock Text="Launch with controller" Classes="label" Margin="0,4,0,0"/>
+                    <ComboBox ItemsSource="{Binding LaunchControllers}" SelectedItem="{Binding LaunchController}"
+                              HorizontalAlignment="Stretch"
+                              ToolTip.Tip="{x:Static core:HelpText.LaunchController}"/>
+                  </StackPanel>
+                </Flyout>
+              </Button.Flyout>
+            </Button>
+
+            <Button Classes="ghost icon" Content="?" FontWeight="Bold" Command="{Binding ToggleHelpCommand}"
+                    ToolTip.Tip="{x:Static core:HelpText.Help}"/>
+          </StackPanel>
+        </Grid>
+      </Border>
+
+      <!-- ===================== Persistent face panel ===================== -->
+      <Border DockPanel.Dock="Right" Width="310" Classes="card" Margin="0,12,12,12">
+        <DockPanel>
+          <TextBlock DockPanel.Dock="Top" Text="Face preview" Classes="section"
+                     ToolTip.Tip="{x:Static core:HelpText.FacePreview}"/>
+          <TextBlock DockPanel.Dock="Top" Text="Live joint positions streamed from the engine."
+                     Classes="hint" Margin="0,0,0,10"/>
+
+          <!-- Status strip: what the robot is doing, and which voice is talking. -->
+          <Border DockPanel.Dock="Bottom" Classes="inset" Padding="10" Margin="0,12,0,0">
+            <StackPanel Spacing="8">
+              <Grid ColumnDefinitions="Auto,*">
+                <Border Grid.Column="0" Classes="pill"
+                        Background="{Binding Dashboard.State, Converter={x:Static views:Converters.StateSoftBrush}}"
+                        ToolTip.Tip="{x:Static core:HelpText.StateIndicator}">
+                  <StackPanel Orientation="Horizontal" Spacing="7">
+                    <Ellipse Width="8" Height="8" VerticalAlignment="Center"
+                             Fill="{Binding Dashboard.State, Converter={x:Static views:Converters.StateBrush}}"/>
+                    <TextBlock Text="{Binding Dashboard.State}" FontWeight="SemiBold"
+                               FontSize="{StaticResource FontSizeSmall}"
+                               Foreground="{StaticResource TextPrimary}"/>
+                  </StackPanel>
+                </Border>
+                <TextBlock Grid.Column="1" Text="{Binding Dashboard.Emotion}" Classes="muted"
+                           HorizontalAlignment="Right" VerticalAlignment="Center"
+                           FontSize="{StaticResource FontSizeSmall}"/>
+              </Grid>
+              <Grid ColumnDefinitions="Auto,*">
+                <TextBlock Grid.Column="0" Text="Voice" Classes="caption" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="1" Text="{Binding Dashboard.ActiveEngine}" Classes="value"
+                           ToolTip.Tip="{x:Static core:HelpText.ActiveEngine}"/>
+              </Grid>
+            </StackPanel>
+          </Border>
+
+          <!-- The face is drawn anchored near the bottom of its own bounds, so it gets an
+               explicit height and is centred, rather than stretching into a tall empty panel.
+               The height must be explicit: FaceControl has no MeasureOverride, so centring
+               alone would collapse it to a zero desired size and draw nothing. -->
+          <Border Classes="inset" Padding="4">
+            <views:FaceControl Pose="{Binding Dashboard.Pose}" Height="300" VerticalAlignment="Center"/>
+          </Border>
+        </DockPanel>
+      </Border>
+
+      <!-- ===================== Navigation rail + pages ===================== -->
+      <TabControl Classes="rail" Margin="12,12,0,12" SelectedIndex="{Binding SelectedTab}">
+        <TabItem>
+          <TabItem.Header>
+            <StackPanel Orientation="Horizontal" Spacing="10" MinWidth="132">
+              <TextBlock Text="◈" VerticalAlignment="Center"/>
+              <TextBlock Text="Dashboard" VerticalAlignment="Center"/>
+            </StackPanel>
+          </TabItem.Header>
+          <views:DashboardView DataContext="{Binding Dashboard}"/>
+        </TabItem>
+        <TabItem>
+          <TabItem.Header>
+            <StackPanel Orientation="Horizontal" Spacing="10" MinWidth="132">
+              <TextBlock Text="⚙" VerticalAlignment="Center"/>
+              <TextBlock Text="Setup" VerticalAlignment="Center"/>
+            </StackPanel>
+          </TabItem.Header>
+          <views:SetupView DataContext="{Binding Setup}"/>
+        </TabItem>
+        <TabItem>
+          <TabItem.Header>
+            <StackPanel Orientation="Horizontal" Spacing="10" MinWidth="132">
+              <TextBlock Text="≡" VerticalAlignment="Center"/>
+              <TextBlock Text="Configuration" VerticalAlignment="Center"/>
+            </StackPanel>
+          </TabItem.Header>
+          <views:ConfigurationView DataContext="{Binding Configuration}"/>
+        </TabItem>
+        <TabItem>
+          <TabItem.Header>
+            <StackPanel Orientation="Horizontal" Spacing="10" MinWidth="132">
+              <TextBlock Text="✥" VerticalAlignment="Center"/>
+              <TextBlock Text="Manual control" VerticalAlignment="Center"/>
+            </StackPanel>
+          </TabItem.Header>
+          <views:ManualControlView DataContext="{Binding ManualControl}"/>
+        </TabItem>
+        <TabItem>
+          <TabItem.Header>
+            <StackPanel Orientation="Horizontal" Spacing="10" MinWidth="132">
+              <TextBlock Text="◉" VerticalAlignment="Center"/>
+              <TextBlock Text="ML Control" VerticalAlignment="Center"/>
+            </StackPanel>
+          </TabItem.Header>
+          <views:MlControlView DataContext="{Binding MlControl}"/>
+        </TabItem>
+        <TabItem>
+          <TabItem.Header>
+            <StackPanel Orientation="Horizontal" Spacing="10" MinWidth="132">
+              <TextBlock Text="▤" VerticalAlignment="Center"/>
+              <TextBlock Text="Logs" VerticalAlignment="Center"/>
+            </StackPanel>
+          </TabItem.Header>
+          <views:LogsView DataContext="{Binding Logs}"/>
+        </TabItem>
+      </TabControl>
+    </DockPanel>
+
+    <!-- ===================== Help overlay ===================== -->
+    <Border IsVisible="{Binding ShowHelp}" Background="{StaticResource Scrim}">
+      <Border MaxWidth="760" MaxHeight="680" Margin="24" Background="{StaticResource Surface}"
+              BorderBrush="{StaticResource BorderStrong}" BorderThickness="1"
+              CornerRadius="{StaticResource RadiusCard}" Padding="24">
+        <DockPanel>
+          <Grid DockPanel.Dock="Top" Margin="0,0,0,16">
+            <StackPanel>
+              <TextBlock Text="OhBot Control guide" FontSize="{StaticResource FontSizeDisplay}"
+                         FontWeight="SemiBold" Foreground="{StaticResource TextPrimary}"/>
+              <TextBlock Text="Hover any control for a one-line explanation." Classes="hint"/>
+            </StackPanel>
+            <Button Content="✕" Classes="ghost icon" HorizontalAlignment="Right" VerticalAlignment="Top"
+                    Command="{Binding CloseHelpCommand}"/>
+          </Grid>
+          <ScrollViewer>
+            <StackPanel Spacing="16">
+              <TextBlock Text="{x:Static core:HelpText.Intro}" TextWrapping="Wrap"
+                         Foreground="{StaticResource TextSecondary}"/>
+              <StackPanel Spacing="3">
+                <TextBlock Text="◈  Dashboard" FontWeight="SemiBold" Foreground="{StaticResource AccentText}"/>
+                <TextBlock Text="{x:Static core:HelpText.PageDashboard}" TextWrapping="Wrap"
+                           Foreground="{StaticResource TextSecondary}"/>
+              </StackPanel>
+              <StackPanel Spacing="3">
+                <TextBlock Text="⚙  Setup" FontWeight="SemiBold" Foreground="{StaticResource AccentText}"/>
+                <TextBlock Text="{x:Static core:HelpText.PageSetup}" TextWrapping="Wrap"
+                           Foreground="{StaticResource TextSecondary}"/>
+              </StackPanel>
+              <StackPanel Spacing="3">
+                <TextBlock Text="≡  Configuration" FontWeight="SemiBold" Foreground="{StaticResource AccentText}"/>
+                <TextBlock Text="{x:Static core:HelpText.PageConfiguration}" TextWrapping="Wrap"
+                           Foreground="{StaticResource TextSecondary}"/>
+              </StackPanel>
+              <StackPanel Spacing="3">
+                <TextBlock Text="✥  Manual control" FontWeight="SemiBold" Foreground="{StaticResource AccentText}"/>
+                <TextBlock Text="{x:Static core:HelpText.PageManualControl}" TextWrapping="Wrap"
+                           Foreground="{StaticResource TextSecondary}"/>
+              </StackPanel>
+              <StackPanel Spacing="3">
+                <TextBlock Text="◉  ML Control" FontWeight="SemiBold" Foreground="{StaticResource AccentText}"/>
+                <TextBlock Text="{x:Static core:HelpText.PageMlControl}" TextWrapping="Wrap"
+                           Foreground="{StaticResource TextSecondary}"/>
+              </StackPanel>
+              <StackPanel Spacing="3">
+                <TextBlock Text="▤  Logs" FontWeight="SemiBold" Foreground="{StaticResource AccentText}"/>
+                <TextBlock Text="{x:Static core:HelpText.PageLogs}" TextWrapping="Wrap"
+                           Foreground="{StaticResource TextSecondary}"/>
+              </StackPanel>
+            </StackPanel>
+          </ScrollViewer>
+        </DockPanel>
+      </Border>
+    </Border>
+  </Grid>
+</Window>

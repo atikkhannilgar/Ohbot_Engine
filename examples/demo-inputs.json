@@ -1,0 +1,10 @@
+[
+  {
+    "input": "Introduce the next activity in one short sentence.",
+    "scripted_reply": "(Happy) Let us try [Nod] the next step."
+  },
+  {
+    "input": "Ask me to look to your left and explain what happens next.",
+    "scripted_reply": "(Neutral) Please look [LookLeft] to my left. [Blink] Then we can continue."
+  }
+]

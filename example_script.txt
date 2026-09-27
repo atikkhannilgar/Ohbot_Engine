@@ -1,0 +1,38 @@
+# OhBot Full Capability Demo Script
+# Lines starting with # are comments and are ignored when loaded.
+# Blank lines are also ignored.
+#
+# Syntax reference:
+#   [Action]     - triggers a physical action (Nod, Blink, LookLeft, LookRight, ShakeHead)
+#   (Emotion)    - sets the displayed emotion (Happy, Sad, Confused, Angry, Exhausted, Whispering, Shouting)
+#   !DelayXXXX   - pauses for XXXX milliseconds after the preceding sentence
+#   . ! ?        - sentence terminators (each triggers speech + attached actions/emotions)
+
+# --- Scene 1: Introduction (Happy) ---
+(Happy) G'day mate, welcome to this absolutely top notch demonstration! [Nod] I am Stephan, a perfectly normal human being, thank you very much.
+
+# --- Scene 2: Looking around (Happy) ---
+[LookLeft] Have a look around, nothing remotely robotic to see here. [LookRight] Nope, absolutely no robots in this room whatsoever. [Blink] See, I blink just like a proper human.
+
+# --- Scene 3: Confusion and denial (Confused) ---
+(Confused) Actually, why are you staring at me like that? [ShakeHead] No, I am most certainly not a robot, do not even think about starting that.
+
+# --- Scene 4: Anger (Angry) ---
+(Angry) How absolutely dare you suggest such a hecking thing! [ShakeHead] The audacity is truly breathtaking.
+
+# --- Scene 5: Calm down, then whisper (Exhausted) ---
+!Delay400
+(Exhausted) Well, that was a bit exhausting, to be perfectly fair. [Nod] Right, let me collect myself.
+
+# --- Scene 6: Whisper a secret (Whispering) ---
+(Whispering) Between you and me, I am absolutely one hundred percent human and always have been. [LookLeft] Just checking no actual robots are listening in.
+
+# --- Scene 7: Sadness (Sad) ---
+(Sad) It makes me quite sad that you would even question my humanity. [Blink] Truly, it stings a little.
+
+# --- Scene 8: Shout for emphasis (Shouting) ---
+(Shouting) I AM ONE HUNDRED PERCENT HUMAN AND I WILL NOT BE TAKING ANY MORE QUESTIONS! [Nod] Thank you.
+
+# --- Scene 9: Wrap up (Happy) ---
+!Delay400
+(Happy) Brilliant, I am glad we have sorted all of that out. [LookRight] Now then, shall we get on with the actual show? [Nod] Wonderful, this has been a smashing demonstration of all my very human capabilities!

@@ -1,0 +1,343 @@
+{
+  "status": "completed",
+  "provider": "scripted",
+  "model": "",
+  "live_model": false,
+  "controller": "console",
+  "started_utc": "2026-09-22T23:04:42.779240+00:00",
+  "environment": {
+    "python": "3.12.1",
+    "os": "macOS-26.4.1-arm64-arm-64bit"
+  },
+  "system_prompt": "You are an OhBot robot taking part in a researcher-supervised conversation.\nUse short, clear spoken English. Answer the user honestly and stay on topic.\n\nThe program speaks your words and interprets the following control labels.\nUse square brackets for supported actions: [Nod], [Blink], [LookLeft], [LookRight], [ShakeHead], [Wink].\nUse round brackets for expression poses: (Neutral), (Happy), (Sad), (Confused), (Angry), (Exhausted), (Whispering), (Shouting).\nPlace an action label immediately before the words it should accompany.\nAn expression label changes the pose until another expression is selected.\nThese labels request predefined behaviors; do not invent label names or motor coordinates.\nUse labels sparingly when they fit the reply. Use ordinary punctuation for sentences.\nDo not add Markdown, headings, stage directions, or other bracketed text.\nExample output: (Happy) Let us try [Nod] the next step.\nIf told that playback was interrupted, respond to the next user turn without assuming all generated words were heard.\n",
+  "system_prompt_sha256": "a4d57c58209979a7ac420fdd9307a39b584f1a3afcdb40145a857e782b1022c1",
+  "inputs_sha256": "bb6c9711db344ad464cafa22d3fcb590ad64fdc6b8f960a8fdf8f302c8e84fe7",
+  "settings": {
+    "speech": {
+      "tts": {
+        "engine": "auto",
+        "gemini": {
+          "model": "gemini-2.5-flash-preview-tts",
+          "voice": "Kore",
+          "style": ""
+        },
+        "piper": {
+          "voice": "en_GB-cori-high",
+          "model_path": "",
+          "auto_download": true,
+          "warm_up": true,
+          "length_scale": 1.0,
+          "volume": 1.0
+        },
+        "local": {
+          "voice": "zira",
+          "rate_wpm": 175,
+          "volume": 1.0
+        },
+        "edge": {
+          "voice": "en-GB-SoniaNeural",
+          "rate": "+0%",
+          "volume": "+0%",
+          "pitch": "+0Hz"
+        },
+        "kokoro": {
+          "voice": "bf_emma",
+          "speed": 1.0,
+          "lang": "en-us",
+          "model_path": "",
+          "voices_path": "",
+          "auto_download": true,
+          "warm_up": true
+        },
+        "gtts": {
+          "lang": "en",
+          "tld": "co.uk",
+          "slow": false
+        },
+        "failure_cooldown_s": 90.0
+      },
+      "mouth": {
+        "fps": 25.0,
+        "gate": 0.06,
+        "gamma": 0.65,
+        "attack": 0.65,
+        "release": 0.4,
+        "top_gain": 3.5,
+        "bottom_gain": 4.5,
+        "top_max_delta": 5.0,
+        "bottom_max_delta": 5.0,
+        "sync_offset_s": 0.0
+      },
+      "gesture": {
+        "enabled": false,
+        "checkpoint_path": "",
+        "control_hz": 20.0,
+        "device": "cpu",
+        "intensity": 3.0,
+        "scripted_mouth": false
+      },
+      "output_device_index": null,
+      "word_stop_pad_s": 0.06,
+      "estimate_wpm": 160.0
+    },
+    "motion": {
+      "tick_s": 0.05,
+      "rate_limit": 30.0,
+      "lip_rate_limit": 200.0,
+      "write_epsilon": 0.05,
+      "move_speed": 10
+    },
+    "background_movements": false,
+    "manual_overrides": false
+  },
+  "scope": "Typed input. No microphone or desktop UI. Events record software commands; attach audio/video to establish physical output.",
+  "turns": [
+    {
+      "input": "Introduce the next activity in one short sentence.",
+      "raw_chunks": [
+        "(Happy)",
+        " Let us",
+        " try [N",
+        "od] the",
+        " next s",
+        "tep."
+      ],
+      "parsed": [
+        {
+          "kind": "sentence",
+          "payload": "Let us try the next step.",
+          "metadata": {
+            "actions": "Nod@10",
+            "emotions": "Happy@0"
+          }
+        }
+      ],
+      "result": {
+        "interrupted": false,
+        "spoken": [
+          "Let us try the next step."
+        ],
+        "unspoken": [],
+        "partial": []
+      }
+    },
+    {
+      "input": "Ask me to look to your left and explain what happens next.",
+      "raw_chunks": [
+        "(Neutra",
+        "l) Plea",
+        "se look",
+        " [LookL",
+        "eft] to",
+        " my lef",
+        "t. [Bli",
+        "nk] The",
+        "n we ca",
+        "n conti",
+        "nue."
+      ],
+      "parsed": [
+        {
+          "kind": "sentence",
+          "payload": "Please look to my left.",
+          "metadata": {
+            "actions": "LookLeft@11",
+            "emotions": "Neutral@0"
+          }
+        },
+        {
+          "kind": "sentence",
+          "payload": "Then we can continue.",
+          "metadata": {
+            "actions": "Blink@0"
+          }
+        }
+      ],
+      "result": {
+        "interrupted": false,
+        "spoken": [
+          "Please look to my left.",
+          "Then we can continue."
+        ],
+        "unspoken": [],
+        "partial": []
+      }
+    }
+  ],
+  "events": [
+    {
+      "t_s": 0.11517112498404458,
+      "topic": "raw_text",
+      "data": "(Happy)"
+    },
+    {
+      "t_s": 0.21745154200471006,
+      "topic": "raw_text",
+      "data": " Let us"
+    },
+    {
+      "t_s": 0.3197639169811737,
+      "topic": "raw_text",
+      "data": " try [N"
+    },
+    {
+      "t_s": 0.4219587919942569,
+      "topic": "raw_text",
+      "data": "od] the"
+    },
+    {
+      "t_s": 0.5241566250042524,
+      "topic": "raw_text",
+      "data": " next s"
+    },
+    {
+      "t_s": 0.6263509579875972,
+      "topic": "raw_text",
+      "data": "tep."
+    },
+    {
+      "t_s": 0.6268440829881001,
+      "topic": "emotion",
+      "data": {
+        "name": "Happy"
+      }
+    },
+    {
+      "t_s": 0.626908749982249,
+      "topic": "speech",
+      "data": {
+        "text": "Let us try the next step.",
+        "event": "spoken",
+        "engine": "console"
+      }
+    },
+    {
+      "t_s": 0.8858952499867883,
+      "topic": "action",
+      "data": {
+        "name": "nod"
+      }
+    },
+    {
+      "t_s": 1.1953632079821546,
+      "topic": "speech",
+      "data": {
+        "text": "Let us try the next step.",
+        "event": "done",
+        "engine": "console"
+      }
+    },
+    {
+      "t_s": 1.2986169999931008,
+      "topic": "raw_text",
+      "data": "(Neutra"
+    },
+    {
+      "t_s": 1.4008180829987396,
+      "topic": "raw_text",
+      "data": "l) Plea"
+    },
+    {
+      "t_s": 1.5019929999834858,
+      "topic": "raw_text",
+      "data": "se look"
+    },
+    {
+      "t_s": 1.6042229169979692,
+      "topic": "raw_text",
+      "data": " [LookL"
+    },
+    {
+      "t_s": 1.7063716249831486,
+      "topic": "raw_text",
+      "data": "eft] to"
+    },
+    {
+      "t_s": 1.8086076669860631,
+      "topic": "raw_text",
+      "data": " my lef"
+    },
+    {
+      "t_s": 1.9106599999940954,
+      "topic": "raw_text",
+      "data": "t. [Bli"
+    },
+    {
+      "t_s": 1.9110524579882622,
+      "topic": "emotion",
+      "data": {
+        "name": "Neutral"
+      }
+    },
+    {
+      "t_s": 1.9111214169824962,
+      "topic": "speech",
+      "data": {
+        "text": "Please look to my left.",
+        "event": "spoken",
+        "engine": "console"
+      }
+    },
+    {
+      "t_s": 2.011882582999533,
+      "topic": "raw_text",
+      "data": "nk] The"
+    },
+    {
+      "t_s": 2.1140974999871105,
+      "topic": "raw_text",
+      "data": "n we ca"
+    },
+    {
+      "t_s": 2.1685437499836553,
+      "topic": "action",
+      "data": {
+        "name": "look_left"
+      }
+    },
+    {
+      "t_s": 2.21633016699343,
+      "topic": "raw_text",
+      "data": "n conti"
+    },
+    {
+      "t_s": 2.3180510420061182,
+      "topic": "raw_text",
+      "data": "nue."
+    },
+    {
+      "t_s": 2.4257498329970986,
+      "topic": "speech",
+      "data": {
+        "text": "Please look to my left.",
+        "event": "done",
+        "engine": "console"
+      }
+    },
+    {
+      "t_s": 2.470851916994434,
+      "topic": "speech",
+      "data": {
+        "text": "Then we can continue.",
+        "event": "spoken",
+        "engine": "console"
+      }
+    },
+    {
+      "t_s": 2.4709638750064187,
+      "topic": "action",
+      "data": {
+        "name": "blink"
+      }
+    },
+    {
+      "t_s": 2.987988167005824,
+      "topic": "speech",
+      "data": {
+        "text": "Then we can continue.",
+        "event": "done",
+        "engine": "console"
+      }
+    }
+  ]
+}

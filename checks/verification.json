@@ -1,0 +1,37 @@
+{
+  "revision": "2026-09-23-r2",
+  "date": "2026-09-23",
+  "fresh_desktop_setup": "passed",
+  "python_regression_tests": {
+    "passed": 15,
+    "failed": 0
+  },
+  "installation_tests": {
+    "passed": 4,
+    "failed": 0
+  },
+  "csharp_tests": {
+    "passed": 33,
+    "failed": 0,
+    "skipped": 0
+  },
+  "desktop_build": {
+    "result": "passed",
+    "warnings": 0,
+    "errors": 0
+  },
+  "server_smoke": "passed; scripted virtual session; new idle event required after interruption",
+  "console_demo": {
+    "sentences": 20,
+    "actions": 12,
+    "expressions": 8
+  },
+  "custom_action": "completed; nod followed by blink",
+  "scripted_recorder": {
+    "turns": 2,
+    "status": "completed",
+    "live_model": false
+  },
+  "scope": "Software checks. No live LLM, physical robot, microphone capture or learned-motion inference. No new interactive desktop-window validation.",
+  "log_redaction": "Distributed log copies replace local user/workspace/temp paths; full logs are retained privately."
+}

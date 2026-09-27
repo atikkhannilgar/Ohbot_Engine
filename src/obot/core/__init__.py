@@ -1,0 +1,1 @@
+"""obot.core subpackage."""

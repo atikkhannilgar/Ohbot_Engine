@@ -1,0 +1,109 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:ObotControl.Core.ViewModels;assembly=ObotControl.Core"
+             xmlns:core="clr-namespace:ObotControl.Core;assembly=ObotControl.Core"
+             xmlns:views="clr-namespace:ObotControl.App.Views"
+             x:Class="ObotControl.App.Views.ManualControlView"
+             x:Name="Root"
+             x:DataType="vm:ManualControlViewModel" x:CompileBindings="True">
+  <DockPanel>
+
+    <Border DockPanel.Dock="Top" Classes="card" Padding="14,10" Margin="0,0,12,12">
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+          <TextBlock Text="Manual control" Classes="section"/>
+          <TextBlock Text="Enable freezes every joint where it is, then each slider overrides one motor while ambient behaviors keep running on the rest."
+                     Classes="hint" TextWrapping="Wrap" Margin="0"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+          <Button Content="Center all" Classes="ghost" Command="{Binding CenterAllCommand}"
+                  IsEnabled="{Binding CanEdit}" ToolTip.Tip="{x:Static core:HelpText.CenterAllJoints}"/>
+          <Button Content="Enable" Classes="primary" Command="{Binding EnableManualModeCommand}"
+                  IsEnabled="{Binding CanEnable}" ToolTip.Tip="{x:Static core:HelpText.EnableManualControl}"/>
+          <Button Content="Release" Classes="danger" Command="{Binding DisableManualModeCommand}"
+                  IsEnabled="{Binding ManualModeActive}" ToolTip.Tip="{x:Static core:HelpText.ReleaseManualControl}"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+      <StackPanel Spacing="12" Margin="0,0,12,0">
+
+        <!-- Explains the disabled buttons above rather than leaving the user guessing. -->
+        <Border Classes="card" Background="{StaticResource WarningSoft}"
+                BorderBrush="{StaticResource Warning}" IsVisible="{Binding !SessionActive}" Padding="14,10">
+          <!-- Grid, not a horizontal StackPanel: the latter gives the text infinite width,
+               so a long sentence runs off the edge instead of wrapping. -->
+          <Grid ColumnDefinitions="Auto,*">
+            <TextBlock Grid.Column="0" Text="⚠" Foreground="{StaticResource Warning}"
+                       VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <TextBlock Grid.Column="1"
+                       Text="No active session. Start one on the Dashboard first manual control drives the running engine's mixer."
+                       Foreground="{StaticResource TextPrimary}" TextWrapping="Wrap" VerticalAlignment="Center"/>
+          </Grid>
+        </Border>
+
+        <!-- ===== Emotions ===== -->
+        <Border Classes="card" ToolTip.Tip="{x:Static core:HelpText.EmotionsPanel}">
+          <StackPanel Spacing="12">
+            <StackPanel Spacing="2">
+              <TextBlock Text="Emotions" Classes="section"/>
+              <TextBlock Text="Applies that emotion's default mouth/eyes/nod pose the same path the LLM's (Emotion) markers use until you pick another."
+                         Classes="hint" TextWrapping="Wrap"/>
+            </StackPanel>
+            <ItemsControl ItemsSource="{Binding Emotions}">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <WrapPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:EmotionOptionViewModel">
+                  <Button Content="{Binding Name}" Margin="0,0,8,8" Padding="16,7"
+                          Command="{Binding $parent[UserControl].((vm:ManualControlViewModel)DataContext).SetEmotionCommand}"
+                          CommandParameter="{Binding Name}"
+                          IsEnabled="{Binding $parent[UserControl].((vm:ManualControlViewModel)DataContext).CanSetEmotion}"
+                          Background="{Binding IsActive, Converter={x:Static views:Converters.BoolToAccent}}"
+                          Foreground="White"/>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </Border>
+
+        <!-- ===== Motors ===== -->
+        <Border Classes="card" ToolTip.Tip="{x:Static core:HelpText.ManualControlPanel}">
+          <StackPanel Spacing="12">
+            <StackPanel Spacing="2">
+              <TextBlock Text="Motors" Classes="section"/>
+              <TextBlock Text="'now' is the live position reported by the engine; the slider is your target."
+                         Classes="hint"/>
+            </StackPanel>
+            <ItemsControl ItemsSource="{Binding Joints}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:ManualJointViewModel">
+                  <Border Classes="inset" Padding="12,10" Margin="0,0,0,8">
+                    <Grid ColumnDefinitions="130,*,56,96">
+                      <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimary}"/>
+                        <TextBlock Text="{Binding Current, StringFormat='now {0:0.00}'}" Classes="caption"/>
+                      </StackPanel>
+                      <Slider Grid.Column="1" Minimum="0" Maximum="10" TickFrequency="0.1" Margin="4,0"
+                              Value="{Binding Target}" IsEnabled="{Binding Editable}" VerticalAlignment="Center"/>
+                      <TextBlock Grid.Column="2" Text="{Binding Target, StringFormat='{}{0:0.00}'}" Classes="value"/>
+                      <Button Grid.Column="3" Content="Center" Classes="ghost" Margin="10,0,0,0"
+                              HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                              Command="{Binding $parent[UserControl].((vm:ManualControlViewModel)DataContext).ResetJointCommand}"
+                              CommandParameter="{Binding}" IsEnabled="{Binding Editable}"/>
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </Border>
+      </StackPanel>
+    </ScrollViewer>
+  </DockPanel>
+</UserControl>

@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    THE OhBot Control GUI. A single Avalonia desktop app over the shared
+    ObotControl.Core, running natively on Windows, Linux and the Pi. All logic
+    (protocol client + view-models) lives in Core; this project is just the XAML views.
+  -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
+    <AssemblyName>ObotControl.App</AssemblyName>
+    <RootNamespace>ObotControl.App</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.2.3" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.2.3" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.3" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.3" />
+    <PackageReference Include="Avalonia.Diagnostics" Version="11.2.3" Condition="'$(Configuration)' == 'Debug'" />
+    <PackageReference Include="Tmds.DBus.Protocol" Version="0.21.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ObotControl.Core\ObotControl.Core.csproj" />
+  </ItemGroup>
+
+</Project>

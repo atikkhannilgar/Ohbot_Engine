@@ -1,0 +1,42 @@
+{
+  "exit_code": 0,
+  "mode": "console only; no physical robot, microphone, generated audio or model inference",
+  "python": "3.12.1",
+  "script_sha256": "c2d6d78ea27368ff9d1d7f98ad6e8db6c524c2426644b270722969627b115006",
+  "requested_actions": {
+    "Nod": 4,
+    "LookLeft": 2,
+    "LookRight": 2,
+    "Blink": 2,
+    "ShakeHead": 2
+  },
+  "requested_expressions": {
+    "Happy": 2,
+    "Confused": 1,
+    "Angry": 1,
+    "Exhausted": 1,
+    "Whispering": 1,
+    "Sad": 1,
+    "Shouting": 1
+  },
+  "printed_actions": {
+    "nod": 4,
+    "look_left": 2,
+    "look_right": 2,
+    "blink": 2,
+    "shake_head": 2
+  },
+  "printed_expressions": {
+    "Happy": 2,
+    "Confused": 1,
+    "Angry": 1,
+    "Exhausted": 1,
+    "Whispering": 1,
+    "Sad": 1,
+    "Shouting": 1
+  },
+  "printed_sentences": 20,
+  "unknown_actions": [],
+  "elapsed_wall_seconds": 19.443,
+  "elapsed_note": "Console pacing only; not a timing or robot-performance measurement"
+}

@@ -1,0 +1,11 @@
+# Linux development and testing  no Raspberry Pi hardware.
+# The Python packages are the same as on Windows; a few system libraries are
+# needed once (Ubuntu 24.04+ / Debian):
+#   sudo apt install libportaudio2 espeak-ng
+# libportaudio2 is what sounddevice (mic + speaker) loads at runtime; espeak-ng
+# backs pyttsx3, the offline fallback voice. Optional extras:
+#   sudo apt install python3-tk          # only for the tkinter --sim face window
+#   sudo apt install python3.12-venv     # only if creating the venv from the system Python
+#   sudo usermod -aG dialout $USER       # serial-port access for the real robot (re-login after)
+# The GUI's automatic setup points out a missing PortAudio with the same hint.
+-r windows.txt

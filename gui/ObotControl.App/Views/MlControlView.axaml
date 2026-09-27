@@ -1,0 +1,395 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:ObotControl.Core.ViewModels;assembly=ObotControl.Core"
+             xmlns:core="clr-namespace:ObotControl.Core;assembly=ObotControl.Core"
+             xmlns:views="clr-namespace:ObotControl.App.Views"
+             xmlns:models="clr-namespace:ObotControl.Core.Models;assembly=ObotControl.Core"
+             x:Class="ObotControl.App.Views.MlControlView"
+             x:DataType="vm:MlControlViewModel" x:CompileBindings="True">
+  <DockPanel>
+
+    <!-- Pinned action bar: the dirty flag and the Save/Apply pair must stay reachable
+         while scrolling the library. -->
+    <Border DockPanel.Dock="Top" Classes="card" Padding="14,10" Margin="0,0,12,12">
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <TextBlock Text="ML Control" Classes="section"/>
+            <Border Classes="pill" Background="{StaticResource WarningSoft}" Padding="8,2"
+                    IsVisible="{Binding IsDirty}" ToolTip.Tip="{x:Static core:HelpText.DirtyFlag}">
+              <TextBlock Text="unsaved changes" Classes="warn" FontSize="{StaticResource FontSizeCaption}"
+                         FontWeight="SemiBold"/>
+            </Border>
+            <Border Classes="pill" Background="{StaticResource AccentSoft}" Padding="8,2"
+                    IsVisible="{Binding ReloadPending}" ToolTip.Tip="{x:Static core:HelpText.MlApply}">
+              <TextBlock Text="session not using it yet" FontSize="{StaticResource FontSizeCaption}"
+                         FontWeight="SemiBold" Foreground="{StaticResource AccentText}"/>
+            </Border>
+          </StackPanel>
+          <TextBlock Text="{Binding Status}" Classes="hint" Margin="0" TextWrapping="Wrap"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+          <Button Content="Rescan" Classes="ghost" Command="{Binding RefreshCommand}"
+                  IsEnabled="{Binding Connected}"
+                  ToolTip.Tip="Re-scan the engine host for checkpoints and refresh the runtime badge."/>
+          <Button Content="Revert" Classes="ghost" Command="{Binding RevertCommand}"
+                  ToolTip.Tip="Discard edits and return to the last-saved values."/>
+          <Button Content="Apply to session" Classes="ghost" Command="{Binding ReloadModelCommand}"
+                  IsEnabled="{Binding SessionActive}" ToolTip.Tip="{x:Static core:HelpText.MlApply}"/>
+          <Button Content="Save" Classes="primary" Command="{Binding SaveCommand}"
+                  IsEnabled="{Binding Connected}" ToolTip.Tip="{x:Static core:HelpText.Save}"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+      <StackPanel Spacing="12" Margin="0,0,12,0">
+
+        <!-- ===== ML dependencies =====
+             torch is a deliberately optional, large download, so a fresh checkout lands
+             here with nothing installed. This card is the way out of that, and it is only
+             shown while something is actually missing (or an install is running/failed). -->
+        <Border Classes="card" BorderBrush="{StaticResource Warning}"
+                IsVisible="{Binding ShowRequirements}"
+                ToolTip.Tip="{x:Static core:HelpText.MlRequirements}">
+          <StackPanel Spacing="12">
+            <StackPanel Spacing="2">
+              <StackPanel Orientation="Horizontal" Spacing="10">
+                <TextBlock Text="⚠" Foreground="{StaticResource Warning}" VerticalAlignment="Center"/>
+                <TextBlock Text="ML dependencies" Classes="section"/>
+              </StackPanel>
+              <TextBlock Text="{Binding RequirementsSummary}" Classes="hint" TextWrapping="Wrap"/>
+            </StackPanel>
+
+            <!-- One row per requirement, so "what exactly is missing" needs no log reading. -->
+            <ItemsControl ItemsSource="{Binding Requirements}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="models:MlRequirementItem">
+                  <!-- Fixed name column so the ticks line up down the list; wide enough
+                       for the longest entry ("mlBehaviour/beat2_to_ohbot.py"). -->
+                  <Grid ColumnDefinitions="24,230,*,Auto" Margin="0,0,0,4">
+                    <TextBlock Grid.Column="0" VerticalAlignment="Center" FontWeight="Bold"
+                               Text="{Binding Available, Converter={x:Static views:Converters.CheckMark}}"
+                               Foreground="{Binding Available, Converter={x:Static views:Converters.PresenceBrush}}"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center"
+                               Foreground="{StaticResource TextPrimary}" TextWrapping="NoWrap"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Purpose}" Classes="caption"
+                               VerticalAlignment="Center" TextWrapping="Wrap" Margin="8,0"/>
+                    <TextBlock Grid.Column="3" Text="{Binding Detail}" Classes="caption"
+                               VerticalAlignment="Center"/>
+                  </Grid>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- Which interpreter gets installed into. The engine reports its own
+                 sys.executable, so this is never a guess. -->
+            <Border Classes="inset" Padding="12,10">
+              <Grid ColumnDefinitions="170,*" RowDefinitions="Auto,Auto">
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Install into" Classes="label"
+                           VerticalAlignment="Center"/>
+                <SelectableTextBlock Grid.Row="0" Grid.Column="1" Text="{Binding EnginePython}"
+                                     TextWrapping="Wrap" VerticalAlignment="Center"
+                                     FontFamily="{StaticResource MonoFont}"
+                                     FontSize="{StaticResource FontSizeSmall}"
+                                     Foreground="{StaticResource TextSecondary}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Requirements file" Classes="label"
+                           VerticalAlignment="Center" Margin="0,6,0,0"/>
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding RequirementsFile}"
+                           Classes="caption" VerticalAlignment="Center" Margin="0,6,0,0"/>
+              </Grid>
+            </Border>
+
+            <!-- A remote engine's venv is not reachable from this machine's pip. -->
+            <TextBlock IsVisible="{Binding EngineIsRemote}" Classes="hint" TextWrapping="Wrap"
+                       Text="The engine is on another machine, so this app cannot install into its environment. Run &quot;python -m pip install -r requirements/ml.txt&quot; there, then press Rescan."/>
+
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <Button Content="Install ML requirements" Classes="primary"
+                      Command="{Binding InstallRequirementsCommand}"
+                      IsEnabled="{Binding CanInstallRequirements}"
+                      ToolTip.Tip="{x:Static core:HelpText.MlInstall}"/>
+              <Button Content="Cancel" Classes="ghost" Command="{Binding CancelInstallCommand}"
+                      IsVisible="{Binding Installing}"/>
+              <Button Content="Re-check" Classes="ghost" Command="{Binding CheckRuntimeCommand}"
+                      IsEnabled="{Binding Connected}"
+                      ToolTip.Tip="Ask the engine again what it can find. Use this after installing by hand."/>
+            </StackPanel>
+
+            <StackPanel Spacing="6" IsVisible="{Binding InstallStatus, Converter={x:Static views:Converters.IsNotEmptyText}}">
+              <ProgressBar Value="{Binding InstallPercent}" Maximum="100"
+                           IsIndeterminate="{Binding InstallIndeterminate}"
+                           IsVisible="{Binding Installing}"/>
+              <!-- pip's own output line, so a long torch download visibly progresses. -->
+              <TextBlock Text="{Binding InstallStatus}" Classes="caption" TextWrapping="Wrap"/>
+            </StackPanel>
+          </StackPanel>
+        </Border>
+
+        <!-- ===== What this page is + runtime state ===== -->
+        <Border Classes="card" ToolTip.Tip="{x:Static core:HelpText.MlIntro}">
+          <StackPanel Spacing="12">
+            <StackPanel Spacing="2">
+              <TextBlock Text="Gesture model" Classes="section"/>
+              <TextBlock Text="{x:Static core:HelpText.MlIntro}" Classes="hint" TextWrapping="Wrap"/>
+            </StackPanel>
+
+            <CheckBox Content="Drive motion from the AI gesture model" IsChecked="{Binding Enabled}"
+                      FontWeight="SemiBold" ToolTip.Tip="{x:Static core:HelpText.MlEnabled}"/>
+
+            <Border Classes="inset" Padding="12,10">
+              <StackPanel Spacing="8">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                  <TextBlock Grid.Column="0" Text="Runtime" Classes="label" VerticalAlignment="Center"
+                             Width="90"/>
+                  <!-- Plain, left-aligned text: the "value" class is a right-aligned
+                       numeric readout, which reads badly for a whole sentence. -->
+                  <TextBlock Grid.Column="1" Text="{Binding RuntimeText}" TextWrapping="Wrap"
+                             VerticalAlignment="Center" Foreground="{StaticResource TextSecondary}"
+                             ToolTip.Tip="{x:Static core:HelpText.MlRuntime}"/>
+                  <Button Grid.Column="2" Content="Check runtime" Classes="ghost"
+                          Command="{Binding CheckRuntimeCommand}" IsEnabled="{Binding Connected}"
+                          ToolTip.Tip="{x:Static core:HelpText.MlRuntime}"/>
+                </Grid>
+                <Grid ColumnDefinitions="Auto,*">
+                  <TextBlock Grid.Column="0" Text="In session" Classes="label" VerticalAlignment="Center"
+                             Width="90"/>
+                  <TextBlock Grid.Column="1" Text="{Binding LoadedText}" TextWrapping="Wrap"
+                             VerticalAlignment="Center" Foreground="{StaticResource TextSecondary}"
+                             ToolTip.Tip="{x:Static core:HelpText.MlLoaded}"/>
+                </Grid>
+                <Grid ColumnDefinitions="Auto,*">
+                  <TextBlock Grid.Column="0" Text="Selected" Classes="label" VerticalAlignment="Center"
+                             Width="90"/>
+                  <TextBox Grid.Column="1" Text="{Binding CheckpointPath}"
+                           Watermark="No checkpoint selected  pick one in the library below"
+                           ToolTip.Tip="config.json's speech.gesture.checkpoint_path. Editable directly if you already know the path."/>
+                </Grid>
+              </StackPanel>
+            </Border>
+
+          </StackPanel>
+        </Border>
+
+        <!-- ===== Inference settings ===== -->
+        <Border Classes="card">
+          <StackPanel Spacing="12">
+            <StackPanel Spacing="2">
+              <StackPanel Orientation="Horizontal" Spacing="10">
+                <TextBlock Text="Inference" Classes="section"/>
+                <Border Classes="pill" Background="{StaticResource SuccessSoft}" Padding="8,2">
+                  <TextBlock Text="intensity + rate apply live" FontSize="{StaticResource FontSizeCaption}"
+                             FontWeight="SemiBold" Foreground="{StaticResource Success}"/>
+                </Border>
+              </StackPanel>
+              <TextBlock Text="How the selected checkpoint is run. Device changes need the model reloaded (Save does that for a running session); intensity and control rate are re-read every sentence."
+                         Classes="hint" TextWrapping="Wrap"/>
+            </StackPanel>
+
+            <Grid ColumnDefinitions="190,*,64" RowDefinitions="Auto,Auto,Auto,Auto">
+              <StackPanel Grid.Row="0" Grid.Column="0">
+                <TextBlock Text="Device" Classes="label"/>
+                <TextBlock Text="device" Classes="caption"/>
+              </StackPanel>
+              <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Devices}"
+                        SelectedItem="{Binding Device}" Width="160" HorizontalAlignment="Left"
+                        Margin="0,0,0,8" ToolTip.Tip="{x:Static core:HelpText.MlDevice}"/>
+
+              <StackPanel Grid.Row="1" Grid.Column="0">
+                <TextBlock Text="Control rate" Classes="label"/>
+                <TextBlock Text="control_hz  must match training" Classes="caption"/>
+              </StackPanel>
+              <Slider Grid.Row="1" Grid.Column="1" Minimum="5" Maximum="60" TickFrequency="1"
+                      Value="{Binding ControlHz}" ToolTip.Tip="{x:Static core:HelpText.MlControlHz}"/>
+              <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding ControlHz, StringFormat='0'}"
+                         Classes="value"/>
+
+              <StackPanel Grid.Row="2" Grid.Column="0">
+                <TextBlock Text="Gesture intensity" Classes="label"/>
+                <TextBlock Text="intensity  1 = raw model output" Classes="caption"/>
+              </StackPanel>
+              <Slider Grid.Row="2" Grid.Column="1" Minimum="0" Maximum="5" Value="{Binding Intensity}"
+                      ToolTip.Tip="{x:Static core:HelpText.MlIntensity}"/>
+              <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding Intensity, StringFormat='0.0'}"
+                         Classes="value"/>
+
+              <CheckBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,4,0,0"
+                        Content="Keep the lips on the scripted mouth track"
+                        IsChecked="{Binding ScriptedMouth}"
+                        ToolTip.Tip="{x:Static core:HelpText.MlScriptedMouth}"/>
+            </Grid>
+          </StackPanel>
+        </Border>
+
+        <!-- ===== Model library ===== -->
+        <Border Classes="card" ToolTip.Tip="{x:Static core:HelpText.MlLibrary}">
+          <StackPanel Spacing="12">
+            <StackPanel Spacing="2">
+              <TextBlock Text="Model library" Classes="section"/>
+              <TextBlock Text="Named checkpoints from config.json plus everything found under mlBehaviour/runs/ and src/obot/ml/models/ on the engine host."
+                         Classes="hint" TextWrapping="Wrap"/>
+            </StackPanel>
+
+            <!-- Add by path. The engine resolves it, so this works for a remote engine too. -->
+            <Border Classes="inset" Padding="12,10" ToolTip.Tip="{x:Static core:HelpText.MlAddModel}">
+              <Grid ColumnDefinitions="*,180,Auto" RowDefinitions="Auto,Auto">
+                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="Add a model"
+                           Classes="label" Margin="0,0,0,6"/>
+                <TextBox Grid.Row="1" Grid.Column="0" Text="{Binding NewModelPath}" Margin="0,0,8,0"
+                         Watermark="Path to a train.py checkpoint, e.g. mlBehaviour/runs/my_run/best_model.pt"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding NewModelName}" Margin="0,0,8,0"
+                         Watermark="Name (optional)"/>
+                <Button Grid.Row="1" Grid.Column="2" Content="Add" Classes="ghost"
+                        Command="{Binding AddModelCommand}"/>
+              </Grid>
+            </Border>
+
+            <TextBlock Text="No checkpoints found. Add one above, or train a run with mlBehaviour/train.py."
+                       Classes="hint" TextWrapping="Wrap"
+                       IsVisible="{Binding Models.Count, Converter={x:Static views:Converters.IsEmpty}}"/>
+
+            <ItemsControl ItemsSource="{Binding Models}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:MlModelViewModel">
+                  <!-- The selected model is tinted, so which checkpoint will actually drive
+                       speech is obvious without reading the path. -->
+                  <Border Classes="inset" Padding="12,10" Margin="0,0,0,8"
+                          Background="{Binding IsSelected, Converter={x:Static views:Converters.SelectedRowBrush}}">
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+                      <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Spacing="8">
+                        <TextBox Text="{Binding Name}" MinWidth="220" FontWeight="SemiBold"
+                                 ToolTip.Tip="Name shown in this list. Saved to config.json for kept models."/>
+                        <Border Classes="pill" Padding="8,2" VerticalAlignment="Center"
+                                Background="{StaticResource SurfaceRaised}">
+                          <TextBlock Text="{Binding Source}" FontSize="{StaticResource FontSizeCaption}"
+                                     Classes="muted"/>
+                        </Border>
+                        <Border Classes="pill" Padding="8,2" VerticalAlignment="Center"
+                                Background="{StaticResource AccentSoft}" IsVisible="{Binding IsSelected}">
+                          <TextBlock Text="in use" FontSize="{StaticResource FontSizeCaption}"
+                                     FontWeight="SemiBold" Foreground="{StaticResource AccentText}"/>
+                        </Border>
+                      </StackPanel>
+
+                      <StackPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Orientation="Horizontal"
+                                  Spacing="6" VerticalAlignment="Top">
+                        <Button Content="Use" Classes="primary"
+                                Command="{Binding $parent[UserControl].((vm:MlControlViewModel)DataContext).UseModelCommand}"
+                                CommandParameter="{Binding}"
+                                ToolTip.Tip="Make this the checkpoint that drives speech (applied on Save)."/>
+                        <Button Content="Inspect" Classes="ghost"
+                                Command="{Binding $parent[UserControl].((vm:MlControlViewModel)DataContext).InspectCommand}"
+                                CommandParameter="{Binding}"
+                                ToolTip.Tip="{x:Static core:HelpText.MlInspect}"/>
+                        <Button Content="Keep" Classes="ghost" IsVisible="{Binding !IsRegistered}"
+                                Command="{Binding $parent[UserControl].((vm:MlControlViewModel)DataContext).RegisterModelCommand}"
+                                CommandParameter="{Binding}"
+                                ToolTip.Tip="Store this discovered checkpoint in config.json under the name above."/>
+                        <Button Content="Remove" Classes="danger" IsVisible="{Binding IsRegistered}"
+                                Command="{Binding $parent[UserControl].((vm:MlControlViewModel)DataContext).RemoveModelCommand}"
+                                CommandParameter="{Binding}"
+                                ToolTip.Tip="Drop this entry from config.json. The checkpoint file itself is left alone."/>
+                      </StackPanel>
+
+                      <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding Subtitle}" Classes="caption"
+                                 TextWrapping="Wrap" Margin="0,4,8,0"/>
+                      <TextBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Notes}"
+                               Margin="0,8,0,0" Watermark="Notes (what this run was, how it sounds…)"
+                               IsVisible="{Binding IsRegistered}"/>
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- Inspection output: plain monospace, because it is a table of numbers. -->
+            <Border Classes="inset" Padding="12,10" IsVisible="{Binding HasInspection}">
+              <StackPanel Spacing="6">
+                <TextBlock Text="Checkpoint contents" Classes="label"/>
+                <TextBlock Text="{Binding InspectionTitle}" Classes="caption" TextWrapping="Wrap"/>
+                <!-- Selectable so the numbers can be copied into a training note. The
+                     "mono" class selector only matches TextBlock itself, so the font is
+                     set here rather than through Styles/Controls.axaml. -->
+                <SelectableTextBlock Text="{Binding InspectionDetails}" TextWrapping="Wrap"
+                                     FontFamily="{StaticResource MonoFont}"
+                                     FontSize="{StaticResource FontSizeSmall}"
+                                     Foreground="{StaticResource TextSecondary}"/>
+              </StackPanel>
+            </Border>
+          </StackPanel>
+        </Border>
+
+        <!-- ===== Preview / ground-truth replay ===== -->
+        <Border Classes="card" ToolTip.Tip="{x:Static core:HelpText.MlPreview}">
+          <StackPanel Spacing="12">
+            <StackPanel Spacing="2">
+              <TextBlock Text="Preview" Classes="section"/>
+              <TextBlock Text="Watch the selected checkpoint move the robot before putting it in a conversation, and compare it against a recorded training clip."
+                         Classes="hint" TextWrapping="Wrap"/>
+            </StackPanel>
+
+            <Border Classes="card" Background="{StaticResource WarningSoft}"
+                    BorderBrush="{StaticResource Warning}" IsVisible="{Binding !SessionActive}" Padding="14,10">
+              <Grid ColumnDefinitions="Auto,*">
+                <TextBlock Grid.Column="0" Text="⚠" Foreground="{StaticResource Warning}"
+                           VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <TextBlock Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Center"
+                           Foreground="{StaticResource TextPrimary}"
+                           Text="No active session. Start one on the Dashboard first  a preview drives that session's robot, and the model is loaded into it."/>
+              </Grid>
+            </Border>
+
+            <Grid ColumnDefinitions="190,*,Auto,Auto">
+              <StackPanel Grid.Column="0">
+                <TextBlock Text="Audio to gesture along to" Classes="label"/>
+                <TextBlock Text="ml.preview_wav" Classes="caption"/>
+              </StackPanel>
+              <TextBox Grid.Column="1" Text="{Binding PreviewWav}" Margin="0,0,8,0"
+                       Watermark="Path to a .wav on the engine host"/>
+              <Button Grid.Column="2" Content="Preview" Classes="primary" Margin="0,0,6,0"
+                      Command="{Binding PreviewCommand}" IsEnabled="{Binding CanPreview}"
+                      ToolTip.Tip="{x:Static core:HelpText.MlPreview}"/>
+              <Button Grid.Column="3" Content="Stop" Classes="stop" Command="{Binding StopPreviewCommand}"
+                      IsEnabled="{Binding Previewing}"
+                      ToolTip.Tip="Cut the running preview/replay short and hand the joints back."/>
+            </Grid>
+
+            <TextBlock Text="{Binding PreviewStatus}" Classes="hint" TextWrapping="Wrap"
+                       IsVisible="{Binding PreviewStatus, Converter={x:Static views:Converters.IsNotEmptyText}}"/>
+
+            <Separator Background="{StaticResource BorderSubtle}" Height="1"/>
+
+            <StackPanel Spacing="2">
+              <TextBlock Text="Ground-truth replay" Classes="label"/>
+              <TextBlock Text="{x:Static core:HelpText.MlReplay}" Classes="hint" TextWrapping="Wrap"/>
+            </StackPanel>
+
+            <Grid ColumnDefinitions="190,*,Auto" RowDefinitions="Auto,Auto">
+              <StackPanel Grid.Row="0" Grid.Column="0">
+                <TextBlock Text="Dataset manifest" Classes="label"/>
+                <TextBlock Text="ml.dataset_manifest  blank = default" Classes="caption"/>
+              </StackPanel>
+              <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding ClipManifest}" Margin="0,0,8,8"
+                       Watermark="mlBehaviour/ohbot_data/manifest.csv"/>
+              <Button Grid.Row="0" Grid.Column="2" Content="Refresh clips" Classes="ghost" Margin="0,0,0,8"
+                      Command="{Binding RefreshClipsCommand}" IsEnabled="{Binding Connected}"/>
+
+              <TextBlock Grid.Row="1" Grid.Column="0" Text="Clip" Classes="label" VerticalAlignment="Center"/>
+              <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                <ComboBox ItemsSource="{Binding Clips}" SelectedItem="{Binding SelectedClip}"
+                          MinWidth="260"/>
+                <TextBlock Text="speed" Classes="caption" VerticalAlignment="Center"/>
+                <NumericUpDown Value="{Binding ReplaySpeed}" Minimum="0.25" Maximum="2" Increment="0.25"
+                               Width="110" ShowButtonSpinner="True"/>
+                <CheckBox Content="with audio" IsChecked="{Binding ReplayAudio}" VerticalAlignment="Center"/>
+              </StackPanel>
+              <Button Grid.Row="1" Grid.Column="2" Content="Replay" Classes="ghost"
+                      Command="{Binding ReplayClipCommand}" IsEnabled="{Binding CanPreview}"
+                      ToolTip.Tip="{x:Static core:HelpText.MlReplay}"/>
+            </Grid>
+          </StackPanel>
+        </Border>
+      </StackPanel>
+    </ScrollViewer>
+  </DockPanel>
+</UserControl>

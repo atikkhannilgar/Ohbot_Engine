@@ -1,0 +1,125 @@
+{
+  "gemini_api_key": "",
+  "ollama_ssh": {
+    "host": "",
+    "port": 22,
+    "user": "",
+    "key_path": "",
+    "remote_ollama_host": "localhost",
+    "remote_ollama_port": 11434
+  },
+  "audio": {
+    "input_device_index": null,
+    "stt_engine": "",
+    "vosk_model_path": ""
+  },
+  "recent_gemini_models": [],
+  "recent_ollama_models": [],
+  "ohbot_port": "COM7",
+  "speech": {
+    "tts": {
+      "engine": "auto",
+      "gemini": {
+        "model": "gemini-2.5-flash-preview-tts",
+        "voice": "Kore",
+        "style": ""
+      },
+      "piper": {
+        "voice": "en_GB-cori-high",
+        "model_path": "",
+        "auto_download": true,
+        "warm_up": true,
+        "length_scale": 1.0,
+        "volume": 1.0
+      },
+      "local": {
+        "voice": "zira",
+        "rate_wpm": 175,
+        "volume": 1.0
+      },
+      "edge": {
+        "voice": "en-GB-SoniaNeural",
+        "rate": "+0%",
+        "volume": "+0%",
+        "pitch": "+0Hz"
+      },
+      "kokoro": {
+        "voice": "bf_emma",
+        "speed": 1.0,
+        "lang": "en-us",
+        "model_path": "",
+        "voices_path": "",
+        "auto_download": true,
+        "warm_up": true
+      },
+      "gtts": {
+        "lang": "en",
+        "tld": "co.uk",
+        "slow": false
+      },
+      "failure_cooldown_s": 90.0
+    },
+    "mouth": {
+      "fps": 25.0,
+      "gate": 0.06,
+      "gamma": 0.65,
+      "attack": 0.65,
+      "release": 0.4,
+      "top_gain": 3.5,
+      "bottom_gain": 4.5,
+      "top_max_delta": 5.0,
+      "bottom_max_delta": 5.0,
+      "sync_offset_s": 0.0
+    },
+    "gesture": {
+      "enabled": false,
+      "checkpoint_path": "",
+      "control_hz": 20.0,
+      "device": "cpu",
+      "intensity": 3.0,
+      "scripted_mouth": false
+    },
+    "output_device_index": null,
+    "word_stop_pad_s": 0.06,
+    "estimate_wpm": 160.0
+  },
+  "motion": {
+    "tick_s": 0.05,
+    "rate_limit": 30.0,
+    "lip_rate_limit": 200.0,
+    "write_epsilon": 0.05,
+    "move_speed": 10
+  },
+  "behaviors": {
+    "auto_blink": {
+      "enabled": false,
+      "min_interval_s": 2.0,
+      "max_interval_s": 6.0,
+      "intensity": 1.0
+    },
+    "listening_nod": {
+      "enabled": false,
+      "min_interval_s": 2.5,
+      "max_interval_s": 6.0,
+      "intensity": 0.6
+    },
+    "speaking_sway": {
+      "enabled": false,
+      "min_interval_s": 1.2,
+      "max_interval_s": 2.8,
+      "intensity": 0.6
+    },
+    "idle_wander": {
+      "enabled": false,
+      "min_interval_s": 3.0,
+      "max_interval_s": 8.0,
+      "intensity": 1.0
+    }
+  },
+  "ml": {
+    "models": [],
+    "scan_dirs": [],
+    "preview_wav": "",
+    "dataset_manifest": ""
+  }
+}

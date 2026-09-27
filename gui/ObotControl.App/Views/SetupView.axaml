@@ -1,0 +1,244 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:ObotControl.Core.ViewModels;assembly=ObotControl.Core"
+             xmlns:core="clr-namespace:ObotControl.Core;assembly=ObotControl.Core"
+             xmlns:views="clr-namespace:ObotControl.App.Views"
+             x:Class="ObotControl.App.Views.SetupView"
+             x:DataType="vm:SetupViewModel" x:CompileBindings="True">
+  <DockPanel>
+
+    <!-- Save/Reload stay pinned so they are reachable from anywhere in a long page. -->
+    <Border DockPanel.Dock="Top" Classes="card" Padding="14,10" Margin="0,0,12,12">
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+          <TextBlock Text="Setup" Classes="section"/>
+          <TextBlock Text="{Binding Status}" Classes="hint" Margin="0"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+          <Button Content="Refresh devices &amp; voices" Classes="ghost" Command="{Binding RefreshDevicesCommand}"
+                  IsEnabled="{Binding Connected}" ToolTip.Tip="{x:Static core:HelpText.RefreshDevices}"/>
+          <Button Content="Reload" Classes="ghost" Command="{Binding ReloadCommand}"
+                  IsEnabled="{Binding Connected}" ToolTip.Tip="{x:Static core:HelpText.Reload}"/>
+          <Button Content="Save" Classes="primary" Command="{Binding SaveCommand}"
+                  IsEnabled="{Binding Connected}" ToolTip.Tip="{x:Static core:HelpText.Save}"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+      <StackPanel Spacing="12" Margin="0,0,12,0">
+
+        <views:PythonSetupView DataContext="{Binding Python}"/>
+
+        <!-- ===== 2. Credentials & hardware ===== -->
+        <Border Classes="card">
+          <StackPanel Spacing="12">
+            <Grid ColumnDefinitions="Auto,*">
+              <Border Grid.Column="0" Width="24" Height="24" CornerRadius="12" Margin="0,0,10,0"
+                      Background="{StaticResource AccentSoft}" VerticalAlignment="Top">
+                <TextBlock Text="2" FontWeight="Bold" FontSize="{StaticResource FontSizeSmall}"
+                           Foreground="{StaticResource AccentText}"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+              </Border>
+              <StackPanel Grid.Column="1" Spacing="2">
+                <TextBlock Text="Credentials &amp; hardware" Classes="section"/>
+                <TextBlock Text="The API key is only needed for the Gemini backend. The serial port is only needed for the physical robot."
+                           Classes="hint" TextWrapping="Wrap"/>
+              </StackPanel>
+            </Grid>
+            <Grid ColumnDefinitions="150,*" RowDefinitions="Auto,Auto">
+              <TextBlock Grid.Row="0" Grid.Column="0" Text="OhBot serial port" Classes="label"/>
+              <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding OhbotPort}" Width="150"
+                       HorizontalAlignment="Left" Margin="0,0,0,8"
+                       ToolTip.Tip="{x:Static core:HelpText.ComPort}"/>
+              <TextBlock Grid.Row="1" Grid.Column="0" Text="Gemini API key" Classes="label"/>
+              <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding GeminiApiKey}" PasswordChar="•"
+                       Watermark="Paste your Google AI Studio key"
+                       ToolTip.Tip="{x:Static core:HelpText.ApiKey}"/>
+            </Grid>
+          </StackPanel>
+        </Border>
+
+        <!-- ===== 3. Remote Ollama ===== -->
+        <Border Classes="card" ToolTip.Tip="{x:Static core:HelpText.SshFields}">
+          <StackPanel Spacing="12">
+            <Grid ColumnDefinitions="Auto,*">
+              <Border Grid.Column="0" Width="24" Height="24" CornerRadius="12" Margin="0,0,10,0"
+                      Background="{StaticResource AccentSoft}" VerticalAlignment="Top">
+                <TextBlock Text="3" FontWeight="Bold" FontSize="{StaticResource FontSizeSmall}"
+                           Foreground="{StaticResource AccentText}"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+              </Border>
+              <StackPanel Grid.Column="1" Spacing="2">
+                <TextBlock Text="Remote Ollama (SSH)" Classes="section"/>
+                <TextBlock Text="Optional. Only needed to run a self-hosted model on another machine."
+                           Classes="hint" TextWrapping="Wrap"/>
+              </StackPanel>
+            </Grid>
+            <Grid ColumnDefinitions="150,*,110,120" RowDefinitions="Auto,Auto,Auto">
+              <TextBlock Grid.Row="0" Grid.Column="0" Text="Host" Classes="label"/>
+              <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SshHost}" Margin="0,0,10,8"/>
+              <TextBlock Grid.Row="0" Grid.Column="2" Text="SSH port" Classes="label"/>
+              <TextBox Grid.Row="0" Grid.Column="3" Text="{Binding SshPort}" Margin="0,0,0,8"/>
+              <TextBlock Grid.Row="1" Grid.Column="0" Text="User" Classes="label"/>
+              <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SshUser}" Margin="0,0,10,8"/>
+              <TextBlock Grid.Row="1" Grid.Column="2" Text="Ollama port" Classes="label"/>
+              <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding RemoteOllamaPort}" Margin="0,0,0,8"/>
+              <TextBlock Grid.Row="2" Grid.Column="0" Text="Private key path" Classes="label"/>
+              <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding SshKeyPath}"
+                       Watermark="OpenSSH-format private key"/>
+            </Grid>
+          </StackPanel>
+        </Border>
+
+        <!-- ===== 4. Microphone & STT ===== -->
+        <Border Classes="card">
+          <StackPanel Spacing="12">
+            <Grid ColumnDefinitions="Auto,*">
+              <Border Grid.Column="0" Width="24" Height="24" CornerRadius="12" Margin="0,0,10,0"
+                      Background="{StaticResource AccentSoft}" VerticalAlignment="Top">
+                <TextBlock Text="4" FontWeight="Bold" FontSize="{StaticResource FontSizeSmall}"
+                           Foreground="{StaticResource AccentText}"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+              </Border>
+              <StackPanel Grid.Column="1" Spacing="2">
+                <TextBlock Text="Microphone &amp; speech-to-text" Classes="section"/>
+                <TextBlock Text="Leave on System default for the OS mic, or pick one and press Test — the bar should move when you speak."
+                           Classes="hint" TextWrapping="Wrap"/>
+              </StackPanel>
+            </Grid>
+
+            <Grid ColumnDefinitions="*,Auto">
+              <ComboBox Grid.Column="0" ItemsSource="{Binding Mics}" SelectedItem="{Binding SelectedMic}"
+                        HorizontalAlignment="Stretch" ToolTip.Tip="{x:Static core:HelpText.MicPick}"/>
+              <Button Grid.Column="1" Content="Test mic (3s)" Classes="ghost" Margin="8,0,0,0"
+                      Command="{Binding TestMicCommand}" ToolTip.Tip="{x:Static core:HelpText.TestMic}"/>
+            </Grid>
+            <StackPanel Spacing="4">
+              <ProgressBar Minimum="0" Maximum="3000" Value="{Binding MicLevel}"/>
+              <TextBlock Text="{Binding MicPeak, StringFormat='peak {0:0}'}" Classes="caption"/>
+            </StackPanel>
+
+            <Separator Background="{StaticResource BorderSubtle}"/>
+
+            <Grid ColumnDefinitions="150,140,*">
+              <TextBlock Grid.Column="0" Text="Recognition engine" Classes="label"/>
+              <ComboBox Grid.Column="1" ItemsSource="{Binding SttEngines}" SelectedItem="{Binding SttEngine}"
+                        HorizontalAlignment="Stretch" Margin="0,0,10,0"
+                        ToolTip.Tip="{x:Static core:HelpText.SttEngine}"/>
+              <TextBlock Grid.Column="2" Text="vosk runs offline, google needs internet." Classes="hint"
+                         VerticalAlignment="Center" Margin="0"/>
+            </Grid>
+
+            <Grid ColumnDefinitions="150,*">
+              <TextBlock Grid.Column="0" Text="Vosk model folder" Classes="label"/>
+              <TextBox Grid.Column="1" Text="{Binding VoskModelPath}"
+                       Watermark="Set automatically by the download below"
+                       ToolTip.Tip="{x:Static core:HelpText.VoskModel}"/>
+            </Grid>
+
+            <Border Classes="inset" Padding="12">
+              <StackPanel Spacing="8">
+                <TextBlock Text="Download a Vosk model" Classes="label"/>
+                <TextBlock Text="Downloads, unzips and points the config at it in one step."
+                           Classes="hint"/>
+                <Grid ColumnDefinitions="*,Auto,Auto">
+                  <ComboBox Grid.Column="0" ItemsSource="{Binding VoskModelOptions}"
+                            SelectedItem="{Binding SelectedVoskModelOption}" HorizontalAlignment="Stretch"/>
+                  <Button Grid.Column="1" Content="Download &amp; use" Classes="primary" Margin="8,0,0,0"
+                          Command="{Binding SetupVoskCommand}"
+                          ToolTip.Tip="{x:Static core:HelpText.VoskAutoSetup}"/>
+                  <Button Grid.Column="2" Content="Cancel" Classes="ghost" Margin="8,0,0,0"
+                          Command="{Binding CancelVoskSetupCommand}" IsVisible="{Binding VoskSetupBusy}"/>
+                </Grid>
+                <ProgressBar Minimum="0" Maximum="100" Value="{Binding VoskSetupPercent}"
+                             IsIndeterminate="{Binding VoskSetupIndeterminate}" IsVisible="{Binding VoskSetupBusy}"/>
+                <TextBlock Text="{Binding VoskSetupStatus}" Classes="caption"/>
+              </StackPanel>
+            </Border>
+          </StackPanel>
+        </Border>
+
+        <!-- ===== 5. TTS voices ===== -->
+        <Border Classes="card">
+          <StackPanel Spacing="12">
+            <Grid ColumnDefinitions="Auto,*">
+              <Border Grid.Column="0" Width="24" Height="24" CornerRadius="12" Margin="0,0,10,0"
+                      Background="{StaticResource AccentSoft}" VerticalAlignment="Top">
+                <TextBlock Text="5" FontWeight="Bold" FontSize="{StaticResource FontSizeSmall}"
+                           Foreground="{StaticResource AccentText}"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+              </Border>
+              <StackPanel Grid.Column="1" Spacing="2">
+                <TextBlock Text="Text-to-speech voices" Classes="section"/>
+                <TextBlock Text="Leave the chain on auto to fall back automatically, or pin one engine. ★ marks the recommended voices."
+                           Classes="hint" TextWrapping="Wrap"/>
+              </StackPanel>
+            </Grid>
+
+            <Grid ColumnDefinitions="150,140,*">
+              <TextBlock Grid.Column="0" Text="Engine chain" Classes="label"/>
+              <ComboBox Grid.Column="1" ItemsSource="{Binding TtsEngines}" SelectedItem="{Binding TtsEngine}"
+                        HorizontalAlignment="Stretch" Margin="0,0,10,0"
+                        ToolTip.Tip="{x:Static core:HelpText.TtsEngine}"/>
+              <TextBlock Grid.Column="2" Text="auto = edge → kokoro → piper → local" Classes="hint"
+                         VerticalAlignment="Center" Margin="0"/>
+            </Grid>
+
+            <TextBox Text="{Binding TestText}" Watermark="Test sentence spoken by the Test buttons"/>
+
+            <Grid ColumnDefinitions="110,*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
+              <TextBlock Grid.Row="0" Grid.Column="0" Text="Edge ★" Classes="label"
+                         ToolTip.Tip="Microsoft Edge neural voices free, online, best quality."/>
+              <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding EdgeVoices}" SelectedItem="{Binding EdgeVoice}"
+                        HorizontalAlignment="Stretch" Margin="0,0,8,6"/>
+              <Button Grid.Row="0" Grid.Column="2" Content="Test" Classes="ghost" Margin="0,0,0,6"
+                      Command="{Binding TestVoiceCommand}" CommandParameter="edge"
+                      ToolTip.Tip="{x:Static core:HelpText.TestVoice}"/>
+
+              <TextBlock Grid.Row="1" Grid.Column="0" Text="Kokoro ★" Classes="label"
+                         ToolTip.Tip="Kokoro offline neural voice, best local quality."/>
+              <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding KokoroVoices}" SelectedItem="{Binding KokoroVoice}"
+                        HorizontalAlignment="Stretch" Margin="0,0,8,6"/>
+              <Button Grid.Row="1" Grid.Column="2" Content="Test" Classes="ghost" Margin="0,0,0,6"
+                      Command="{Binding TestVoiceCommand}" CommandParameter="kokoro"
+                      ToolTip.Tip="{x:Static core:HelpText.TestVoice}"/>
+
+              <TextBlock Grid.Row="2" Grid.Column="0" Text="gTTS" Classes="label"
+                         ToolTip.Tip="Google Translate TTS free, online. The value is the accent (TLD)."/>
+              <ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding GttsAccents}" SelectedItem="{Binding GttsAccent}"
+                        HorizontalAlignment="Stretch" Margin="0,0,8,6"/>
+              <Button Grid.Row="2" Grid.Column="2" Content="Test" Classes="ghost" Margin="0,0,0,6"
+                      Command="{Binding TestVoiceCommand}" CommandParameter="gtts"
+                      ToolTip.Tip="{x:Static core:HelpText.TestVoice}"/>
+
+              <TextBlock Grid.Row="3" Grid.Column="0" Text="Gemini" Classes="label"
+                         ToolTip.Tip="Very natural, but the free tier allows only about 3 requests a minute."/>
+              <ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding GeminiVoices}" SelectedItem="{Binding GeminiVoice}"
+                        HorizontalAlignment="Stretch" Margin="0,0,8,6"/>
+              <Button Grid.Row="3" Grid.Column="2" Content="Test" Classes="ghost" Margin="0,0,0,6"
+                      Command="{Binding TestVoiceCommand}" CommandParameter="gemini"
+                      ToolTip.Tip="{x:Static core:HelpText.TestVoice}"/>
+
+              <TextBlock Grid.Row="4" Grid.Column="0" Text="Piper" Classes="label"
+                         ToolTip.Tip="Offline neural voice. Models download automatically on first use."/>
+              <ComboBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding PiperVoices}" SelectedItem="{Binding PiperVoice}"
+                        HorizontalAlignment="Stretch" Margin="0,0,8,6"/>
+              <Button Grid.Row="4" Grid.Column="2" Content="Test" Classes="ghost" Margin="0,0,0,6"
+                      Command="{Binding TestVoiceCommand}" CommandParameter="piper"
+                      ToolTip.Tip="{x:Static core:HelpText.TestVoice}"/>
+
+              <TextBlock Grid.Row="5" Grid.Column="0" Text="Local" Classes="label"
+                         ToolTip.Tip="SAPI on Windows, espeak-ng on Linux. Robotic, but always available."/>
+              <ComboBox Grid.Row="5" Grid.Column="1" ItemsSource="{Binding LocalVoices}" SelectedItem="{Binding LocalVoice}"
+                        HorizontalAlignment="Stretch" Margin="0,0,8,0"/>
+              <Button Grid.Row="5" Grid.Column="2" Content="Test" Classes="ghost"
+                      Command="{Binding TestVoiceCommand}" CommandParameter="local"
+                      ToolTip.Tip="{x:Static core:HelpText.TestVoice}"/>
+            </Grid>
+          </StackPanel>
+        </Border>
+      </StackPanel>
+    </ScrollViewer>
+  </DockPanel>
+</UserControl>

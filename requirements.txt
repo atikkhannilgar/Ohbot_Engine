@@ -1,0 +1,11 @@
+# Basic typed desktop setup. Run from the repository root.
+-r requirements/desktop.txt
+# For the full optional speech/hardware stack:
+# Then use the platform-specific requirements file for your environment:
+#
+#   Windows testing:  pip install -r requirements/windows.txt
+#   Linux testing:    pip install -r requirements/linux.txt
+#   Raspberry Pi:     pip install -r requirements/pi.txt
+#
+# Optional, on top of the above (AI gesture model, training + inference):
+#   pip install -r requirements/ml.txt

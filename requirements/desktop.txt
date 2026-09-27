@@ -1,0 +1,3 @@
+# Run from the repository root. A small installation for typed desktop sessions.
+# Add speech with: python -m pip install -e '.[voice]'
+-e .[desktop]

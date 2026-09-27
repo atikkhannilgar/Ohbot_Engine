@@ -1,0 +1,50 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:ObotControl.Core.ViewModels;assembly=ObotControl.Core"
+             xmlns:views="clr-namespace:ObotControl.App.Views"
+             x:Class="ObotControl.App.Views.LogsView"
+             x:DataType="vm:LogsViewModel" x:CompileBindings="True">
+  <DockPanel>
+
+    <Border DockPanel.Dock="Top" Classes="card" Padding="14,10" Margin="0,0,12,12">
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+          <TextBlock Text="Logs" Classes="section"/>
+          <TextBlock Text="Engine output and structured events." Classes="hint" Margin="0,0,12,0"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
+          <CheckBox Content="Info" IsChecked="{Binding ShowInfo}"/>
+          <CheckBox Content="Warnings" IsChecked="{Binding ShowWarnings}"/>
+          <CheckBox Content="Errors" IsChecked="{Binding ShowErrors}"/>
+          <Button Content="Clear" Classes="ghost" Command="{Binding ClearCommand}"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <Border Classes="inset" Margin="0,0,12,0">
+      <Grid>
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+          <ItemsControl ItemsSource="{Binding Lines}" Margin="12">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="vm:LogLine">
+                <TextBlock Text="{Binding Display}" Classes="mono" TextWrapping="Wrap" Margin="0,1"
+                           Foreground="{StaticResource TextSecondary}"/>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </ScrollViewer>
+
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="6" MaxWidth="340"
+                    IsHitTestVisible="False"
+                    IsVisible="{Binding Lines.Count, Converter={x:Static views:Converters.IsEmpty}}">
+          <TextBlock Text="▤" FontSize="34" HorizontalAlignment="Center"
+                     Foreground="{StaticResource BorderStrong}"/>
+          <TextBlock Text="No log output yet" HorizontalAlignment="Center" FontWeight="SemiBold"
+                     Foreground="{StaticResource TextSecondary}"/>
+          <TextBlock Text="Launch the engine and its output will appear here."
+                     Classes="hint" TextAlignment="Center" TextWrapping="Wrap"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+  </DockPanel>
+</UserControl>

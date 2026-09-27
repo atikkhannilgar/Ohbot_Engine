@@ -1,0 +1,25 @@
+test_empty_audio_is_empty (test_regressions.AudioTests.test_empty_audio_is_empty) ... ok
+test_marker_at_word_end_uses_next_word (test_regressions.AudioTests.test_marker_at_word_end_uses_next_word) ... ok
+test_short_audio_and_partial_frame (test_regressions.AudioTests.test_short_audio_and_partial_frame) ... ok
+test_short_clip_word_spans_stay_within_audio (test_regressions.AudioTests.test_short_clip_word_spans_stay_within_audio) ... ok
+test_silence_has_no_mouth_opening (test_regressions.AudioTests.test_silence_has_no_mouth_opening) ... ok
+test_console_completion_and_interruption (test_regressions.InterruptionTests.test_console_completion_and_interruption) ... ok
+test_legacy_controller_unknown_completion (test_regressions.InterruptionTests.test_legacy_controller_unknown_completion) ... ok
+test_note_does_not_claim_exact_audible_cutoff (test_regressions.InterruptionTests.test_note_does_not_claim_exact_audible_cutoff) ... ok
+test_partial_sentence_is_not_completed (test_regressions.InterruptionTests.test_partial_sentence_is_not_completed) ... ok
+test_uninterrupted_turn_keeps_all_sentences (test_regressions.InterruptionTests.test_uninterrupted_turn_keeps_all_sentences) ... ok
+test_delay_survives_every_two_chunk_split (test_regressions.StreamTests.test_delay_survives_every_two_chunk_split) ... ok
+test_final_delay_is_preserved (test_regressions.StreamTests.test_final_delay_is_preserved) ... ok
+test_final_exclamation_is_punctuation (test_regressions.StreamTests.test_final_exclamation_is_punctuation) ... ok
+test_labels_survive_character_stream (test_regressions.StreamTests.test_labels_survive_character_stream) ... ok
+test_longer_delay_digits_are_not_split (test_regressions.StreamTests.test_longer_delay_digits_are_not_split) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 1.614s
+
+OK
+[speech] Done.
+[speech] This sentence is long enough to interrupt.
+[speech] (cut off)
+[speech] First sentence has several words.
+[speech] Second sentence.

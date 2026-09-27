@@ -1,0 +1,3 @@
+[speech] I will explain the next step.
+[action][sim] nod
+[action][sim] blink

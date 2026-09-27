@@ -1,0 +1,6 @@
+# Raspberry Pi deployment  full hardware stack
+# (ohbot is already pulled in via the windows base; the Pi adds the GPIO stack.)
+-r linux.txt
+
+pigpio>=1.78
+RPi.GPIO>=0.7.1

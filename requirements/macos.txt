@@ -1,0 +1,2 @@
+# Full optional stack for macOS. For a smaller first setup use scripts/setup.py.
+-r windows.txt

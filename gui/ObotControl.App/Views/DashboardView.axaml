@@ -1,0 +1,201 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:ObotControl.Core.ViewModels;assembly=ObotControl.Core"
+             xmlns:core="clr-namespace:ObotControl.Core;assembly=ObotControl.Core"
+             xmlns:views="clr-namespace:ObotControl.App.Views"
+             x:Class="ObotControl.App.Views.DashboardView"
+             x:DataType="vm:DashboardViewModel" x:CompileBindings="True">
+  <Grid ColumnDefinitions="290,*">
+
+    <!-- ===================== Session controls ===================== -->
+    <Border Grid.Column="0" Classes="card" Margin="0,0,12,0">
+      <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Spacing="14">
+
+          <StackPanel Spacing="2">
+            <TextBlock Text="Session" Classes="section"/>
+            <TextBlock Text="Pick a brain and a body, then press Start." Classes="hint"/>
+          </StackPanel>
+
+          <StackPanel Spacing="6">
+            <TextBlock Text="Backend" Classes="label"/>
+            <ComboBox ItemsSource="{Binding Backends}" SelectedItem="{Binding SelectedBackend}"
+                      HorizontalAlignment="Stretch" ToolTip.Tip="{x:Static core:HelpText.Backend}"/>
+          </StackPanel>
+
+          <StackPanel Spacing="6" IsVisible="{Binding RequiresModel}">
+            <TextBlock Text="Model" Classes="label"/>
+            <Grid ColumnDefinitions="*,Auto">
+              <ComboBox Grid.Column="0" ItemsSource="{Binding Models}" SelectedItem="{Binding SelectedModel}"
+                        HorizontalAlignment="Stretch" ToolTip.Tip="{x:Static core:HelpText.Model}"/>
+              <Button Grid.Column="1" Content="↻" Classes="ghost icon" Margin="6,0,0,0"
+                      Command="{Binding RefreshModelsCommand}"
+                      ToolTip.Tip="{x:Static core:HelpText.RefreshModels}"/>
+            </Grid>
+          </StackPanel>
+
+          <StackPanel Spacing="6">
+            <TextBlock Text="Controller" Classes="label"/>
+            <ComboBox ItemsSource="{Binding Controllers}" SelectedItem="{Binding SelectedController}"
+                      HorizontalAlignment="Stretch" ToolTip.Tip="{x:Static core:HelpText.Controller}"/>
+          </StackPanel>
+
+          <StackPanel Spacing="8">
+            <Grid ColumnDefinitions="*,8,*">
+              <Button Grid.Column="0" Content="Start" Classes="primary" Command="{Binding StartSessionCommand}"
+                      IsEnabled="{Binding CanStart}" HorizontalAlignment="Stretch"
+                      HorizontalContentAlignment="Center"
+                      ToolTip.Tip="{x:Static core:HelpText.StartSession}"/>
+              <Button Grid.Column="2" Content="Stop" Classes="ghost" Command="{Binding StopSessionCommand}"
+                      IsEnabled="{Binding SessionActive}" HorizontalAlignment="Stretch"
+                      HorizontalContentAlignment="Center"
+                      ToolTip.Tip="{x:Static core:HelpText.StopSession}"/>
+            </Grid>
+            <Button Content="Switch model (restart)" Classes="ghost" Command="{Binding SwitchCommand}"
+                    IsEnabled="{Binding SessionActive}" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    ToolTip.Tip="{x:Static core:HelpText.SwitchSession}"/>
+
+            <!-- Starting a session takes ~15 s, so it gets real feedback rather than a
+                 dead button: an indeterminate bar, a moving elapsed counter, and a line
+                 saying what is actually happening. -->
+            <Border Classes="inset" Padding="12,10" IsVisible="{Binding IsStarting}"
+                    Background="{StaticResource AccentSoft}">
+              <StackPanel Spacing="8">
+                <Grid ColumnDefinitions="*,Auto">
+                  <TextBlock Grid.Column="0" Text="Starting session…" FontWeight="SemiBold"
+                             Foreground="{StaticResource TextPrimary}"/>
+                  <TextBlock Grid.Column="1" Text="{Binding StartElapsedSeconds, StringFormat='{}{0:0} s'}"
+                             Classes="value"/>
+                </Grid>
+                <ProgressBar IsIndeterminate="True"/>
+                <TextBlock Text="Connecting the backend, warming up the voice model and calibrating the microphone. The first start usually takes about 15 seconds."
+                           Classes="hint" Margin="0"/>
+              </StackPanel>
+            </Border>
+
+            <!-- Tells the user *why* Start is unavailable instead of just greying it out. -->
+            <Border Classes="inset" Padding="10,8" IsVisible="{Binding !Connected}">
+              <TextBlock Text="Not connected. Use Launch engine at the top right to start the engine."
+                         Classes="hint" Margin="0" TextWrapping="Wrap"/>
+            </Border>
+          </StackPanel>
+
+          <Separator Background="{StaticResource BorderSubtle}"/>
+
+          <StackPanel Spacing="6">
+            <TextBlock Text="Microphone" Classes="label"/>
+            <ComboBox ItemsSource="{Binding MicModes}" SelectedItem="{Binding MicMode}"
+                      IsEnabled="{Binding SessionActive}" HorizontalAlignment="Stretch"
+                      ToolTip.Tip="{x:Static core:HelpText.MicMode}"/>
+
+            <!-- Push-to-talk controls, only relevant in ptt mode. -->
+            <StackPanel IsVisible="{Binding IsPtt}" Spacing="8" Margin="0,4,0,0">
+              <Button Content="🎤  Talk" Classes="primary" Command="{Binding TriggerPttCommand}"
+                      IsEnabled="{Binding SessionActive}" HorizontalAlignment="Stretch"
+                      HorizontalContentAlignment="Center"
+                      ToolTip.Tip="{x:Static core:HelpText.PttTalk}"/>
+              <Grid ColumnDefinitions="Auto,*,Auto">
+                <TextBlock Grid.Column="0" Text="Hotkey" Classes="caption" VerticalAlignment="Center"/>
+                <Border Grid.Column="1" Classes="inset" Padding="8,3" Margin="8,0" HorizontalAlignment="Left"
+                        IsVisible="{Binding !CapturingHotkey}">
+                  <TextBlock Text="{Binding PttKey}" Classes="mono"
+                             Foreground="{StaticResource TextPrimary}"/>
+                </Border>
+                <TextBlock Grid.Column="1" Text="press a key…" Classes="warn" Margin="8,0"
+                           VerticalAlignment="Center" IsVisible="{Binding CapturingHotkey}"/>
+                <Button Grid.Column="2" Content="Set…" Classes="ghost"
+                        Command="{Binding StartCaptureHotkeyCommand}"
+                        ToolTip.Tip="{x:Static core:HelpText.PttHotkey}"/>
+              </Grid>
+            </StackPanel>
+          </StackPanel>
+        </StackPanel>
+      </ScrollViewer>
+    </Border>
+
+    <!-- ===================== Conversation ===================== -->
+    <Grid Grid.Column="1" RowDefinitions="*,Auto,Auto">
+
+      <Border Grid.Row="0" Classes="inset">
+        <Grid>
+          <ScrollViewer x:Name="TranscriptScroll" HorizontalScrollBarVisibility="Disabled">
+            <ItemsControl ItemsSource="{Binding Transcript}" Margin="14">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:TranscriptItem">
+                  <Grid Margin="0,3">
+
+                    <!-- User turn: aligned right, accent-tinted. -->
+                    <Border IsVisible="{Binding IsUser}" HorizontalAlignment="Right" MaxWidth="520"
+                            Background="{StaticResource AccentSoft}" CornerRadius="10,10,2,10" Padding="12,8">
+                      <TextBlock Text="{Binding Display}" TextWrapping="Wrap"
+                                 Foreground="{StaticResource TextPrimary}"/>
+                    </Border>
+
+                    <!-- Bot turn: aligned left, with the speaker named once per bubble. -->
+                    <Border IsVisible="{Binding IsBot}" HorizontalAlignment="Left" MaxWidth="520"
+                            Background="{StaticResource SurfaceRaised}" CornerRadius="10,10,10,2" Padding="12,8">
+                      <StackPanel Spacing="3">
+                        <TextBlock Text="Ms. Mimic" FontSize="{StaticResource FontSizeCaption}"
+                                   FontWeight="SemiBold" Foreground="{StaticResource AccentText}"/>
+                        <TextBlock Text="{Binding Display}" TextWrapping="Wrap"
+                                   Foreground="{StaticResource TextPrimary}"
+                                   TextDecorations="{Binding CutOff, Converter={x:Static views:Converters.CutOffDecoration}}"/>
+                      </StackPanel>
+                    </Border>
+
+                    <!-- [Action] / (Emotion) markers: small centred chips, never full bubbles. -->
+                    <Border IsVisible="{Binding IsChip}" HorizontalAlignment="Center" Classes="pill"
+                            Background="{StaticResource SurfaceRaised}" Padding="10,2">
+                      <TextBlock Text="{Binding Display}" Classes="mono"
+                                 Foreground="{StaticResource TextSecondary}"/>
+                    </Border>
+
+                    <!-- Engine notes (e.g. "interrupted"). -->
+                    <TextBlock IsVisible="{Binding IsSystem}" Text="{Binding Display}" Classes="caption"
+                               HorizontalAlignment="Center" TextAlignment="Center"/>
+                  </Grid>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </ScrollViewer>
+
+          <!-- Empty state: an idle panel should still tell you what to do next. -->
+          <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="6" MaxWidth="340"
+                      IsHitTestVisible="False"
+                      IsVisible="{Binding Transcript.Count, Converter={x:Static views:Converters.IsEmpty}}">
+            <TextBlock Text="◌" FontSize="34" HorizontalAlignment="Center"
+                       Foreground="{StaticResource BorderStrong}"/>
+            <TextBlock Text="No conversation yet" HorizontalAlignment="Center" FontWeight="SemiBold"
+                       Foreground="{StaticResource TextSecondary}"/>
+            <TextBlock Text="Start a session, then talk to the robot or type a message below."
+                       Classes="hint" TextAlignment="Center" TextWrapping="Wrap"/>
+          </StackPanel>
+        </Grid>
+      </Border>
+
+      <!-- Live "as you talk" line: interim speech, replaced by the final utterance. -->
+      <Border Grid.Row="1" IsVisible="{Binding HasPendingUser}" Classes="inset"
+              Background="{StaticResource AccentSoft}" Padding="12,8" Margin="0,10,0,0">
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <TextBlock Text="🎤" VerticalAlignment="Top"/>
+          <TextBlock Text="{Binding PendingUserText}" FontStyle="Italic"
+                     Foreground="{StaticResource TextSecondary}" TextWrapping="Wrap"/>
+        </StackPanel>
+      </Border>
+
+      <Grid Grid.Row="2" ColumnDefinitions="*,Auto,Auto" Margin="0,10,0,0">
+        <TextBox Grid.Column="0" x:Name="MessageBox" Watermark="Type a message…  (Enter to send)"
+                 Text="{Binding InputText}" KeyDown="OnMessageKeyDown"
+                 IsEnabled="{Binding CanConverse}" VerticalContentAlignment="Center"
+                 ToolTip.Tip="{x:Static core:HelpText.Send}"/>
+        <Button Grid.Column="1" Content="Send" Classes="primary" Margin="8,0,0,0"
+                Command="{Binding SendCommand}" IsEnabled="{Binding CanConverse}"
+                ToolTip.Tip="{x:Static core:HelpText.Send}"/>
+        <Button Grid.Column="2" Content="Interrupt" Classes="danger stop" Margin="8,0,0,0"
+                Command="{Binding InterruptCommand}" IsEnabled="{Binding SessionActive}"
+                ToolTip.Tip="{x:Static core:HelpText.Interrupt}"/>
+      </Grid>
+    </Grid>
+  </Grid>
+</UserControl>

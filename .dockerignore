@@ -1,0 +1,33 @@
+.git
+.venv
+.obot
+venv
+__pycache__
+**/__pycache__
+**/*.py[cod]
+**/*.egg-info
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.vscode
+.idea
+*.log
+
+# Large / local-only data (mounted as volumes at runtime)
+ohbotData/
+config.json
+
+# GUI (.NET) — not part of the engine image
+gui/
+
+# ML training artifacts
+mlBehaviour/runs/
+mlBehaviour/**/__pycache__/
+
+# Docs / tests not needed at runtime
+docs/
+tests/
+scripts/
+dist/
+*.md
+!README.md

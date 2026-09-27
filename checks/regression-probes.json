@@ -1,0 +1,183 @@
+{
+  "python": "3.12.1",
+  "platform": "macOS-26.4.1-arm64-arm-64bit",
+  "numpy": "2.5.3",
+  "source_files": 66,
+  "syntax_errors": [],
+  "source_sha256": {
+    "checks/check_macos_voice.py": "d6997c003474e270a63cdd5f158a085ba2378815795f3cf3f31c97885e258a85",
+    "checks/example_custom_action.py": "e78366e0c7d2e9958637d54eaf3f7a9f91a7370ae5bb9cbfbb419169fe29aa59",
+    "checks/reproduce_checks.py": "a54c73bd4796daa2b63f86d63f912503710cd4153b51b9cbe0ba4ae8502a65b0",
+    "checks/reproduce_full_demo.py": "fa67b2ac58fc1114e1d133e77f8a1ae0c389e51935db25e05c2d051d239cf850",
+    "mlBehaviour/beat2_to_ohbot.py": "ac23feba127ddd71875ec5d98559175b3442e8e36879ad9b552f27d8fe3066f4",
+    "mlBehaviour/custom_data_pipeline/recorder.py": "da45a9f8070e7f948b64191149a02e27907de25e8591795dd402d79945d091ec",
+    "mlBehaviour/custom_data_pipeline/visualizer.py": "554038c7c68dc76dfa88038db071c7f08b59a485f9a2139218fafeec677792d6",
+    "mlBehaviour/features.py": "3cf1c38456c126ccd41284a0e3c56150d3a14831ebcd6cac19f08bf4723de515",
+    "mlBehaviour/model.py": "5da6093215c5446282fff2b88676700138020d9b6914f3b5683e3d5a06f85720",
+    "mlBehaviour/ohbot_dataset.py": "42aaacb8599ac35582ae3e109df6c410ebf55bd32d5d8d4bcbe44a19ee356774",
+    "mlBehaviour/train.py": "89a5fcd0b591850161dfffe774461eeaf319358a4c988beee8bfe6da23bd34c0",
+    "scripts/capture_demo.py": "ff58d6ae02e6c2bc4ea8d885e3de0b2b7000bb7a2cd79e8459ff515118ab1e03",
+    "scripts/check_setup.py": "161131350546508ac369504a68a89f7dd1e3a35144085c333b2280cdc8ae11d9",
+    "scripts/package_macos.py": "f443b4a05432a775ef51776b6f1b978f6d2c33650c47b7072293590fa5bb9c44",
+    "scripts/run.py": "fcedaaa89bc864f894f446d564665951cf21c616b2fc20d5c4d09f45e7bbe74c",
+    "scripts/setup.py": "5637b9e3f96281ecb2ef04e26009701ce0e0bc2cc9d417f1fb714c86576bfbdd",
+    "src/obot/__init__.py": "328bfb8da89364c60672df1883f8c08b895cde6b19a2911f09630d7abdfcd732",
+    "src/obot/__main__.py": "3e4d9d758664cae1a1e749cb807198a80cc2590cdd2cfb93721a44d64a95cb0b",
+    "src/obot/audio/__init__.py": "0a0f0a19a56d907e608b4207dc9a11b7accd9a1292a8b819445f65bdf9c4e665",
+    "src/obot/audio/input.py": "caac4f226cbf9c4f36f97efb758d3435c318e6c0037828f6f0117957024fd99d",
+    "src/obot/audio/keyboard.py": "d833e3a910ffe7b9c4706525a0ccd304fadb14fa15eca27d72b0048dd1b1a6c7",
+    "src/obot/config.py": "4c738d10c8a7d4703d97b740bbfaaccd2a0cfe475788b48eeaf85e2f8ccc623d",
+    "src/obot/core/__init__.py": "712f4b3f174f79c62ecb50179c5600de5ad7bbbe03f48f4751aa7fa0ac5bb2be",
+    "src/obot/core/events.py": "8834ecfca950edb40c3575290e6dcc465f276a6170fb1f450f961866635df581",
+    "src/obot/core/interrupt.py": "0b18eddace27de74fdd8de9b934d0fcc7a8486bb32621e9a137d6e23342e03a5",
+    "src/obot/core/models.py": "779451598620f2c724f5e8d4832dfc8e49d8312d0294590d8c91db3f0b5df81f",
+    "src/obot/core/orchestrator.py": "b0ecf5764c3e87ec6afbfa42f49872a316abadbb86bc023d30848a16cf0ca403",
+    "src/obot/core/processor.py": "b64b307597241a99cc0b1da172c34a3991b61b6615ca98f31ce7d0b5307653ed",
+    "src/obot/llm/__init__.py": "3ae8657a2599c415b9b317c1040b6df3dc7c956ee0add51f34d8ef76fa8c7aff",
+    "src/obot/llm/client.py": "fa78ea667a5b5058e41991250d8ff97308763fc294b9df914f7138f8409afc88",
+    "src/obot/llm/gemini.py": "1c8cd6e4c4bfc3bd9cee9500ca4950256aeaf20344dee4885a740c169626fc27",
+    "src/obot/llm/ollama.py": "99ca570680038183085fa951c37e621e86452c0bae698d95efeb5dd2f761d77c",
+    "src/obot/llm/picker.py": "15a63f4a112ff469529096b43f3e7f5ad05097b81095fe145c96c1a0c00db35c",
+    "src/obot/ml/__init__.py": "ca8a52eb1dad7bef2aca882fe056d662df6bcafe0ffcbdf52db99a791c3684a7",
+    "src/obot/ml/__main__.py": "32f5762de831765ce9c5a16e086761020fe7e2a116cfa8bbcf0dd579b21d6826",
+    "src/obot/ml/config.py": "1571f1cf90a5bdd7121d514eca7f9bf5e4e015951ff5c059f7cc762ec38e4ab7",
+    "src/obot/ml/driver.py": "8cf21128e35b6954954c5369bc806823c22bb3f636db712180096daa8110e7ed",
+    "src/obot/ml/inference.py": "bbf35a72b38fa59e015770f0dae6c13beef17e09555463a78a707f7bc5d64f7e",
+    "src/obot/ml/preview.py": "b4db57ab2e83267a30f62f1edf1a165a62ae104baaee356f279a8443ffd85ab0",
+    "src/obot/ml/registry.py": "7bb5457d4f865659757df68cd896ea0a86422bbdc783ee2bf642a7ca8fcf3b84",
+    "src/obot/ml/replay_dataset.py": "5662b073cf2fa4215678933c93b24621a94fc0ab309fefbceb265aa6424e0cae",
+    "src/obot/net/__init__.py": "f8dd70bce026b099fb5f931783d43a69a248e6230f83255cb7b3c8018838335a",
+    "src/obot/net/ssh_tunnel.py": "edc505a1fcecceaec2b32929a63de0ac2628272fe615891c1077643ff47bda8e",
+    "src/obot/robot/__init__.py": "9bbd4ab22383214922a314dea6e90b240b277d091d5a3ff460f1264e000dde59",
+    "src/obot/robot/actions.py": "3b5817555b3971a374b8dc2f9becc393190fb2eccee3e7af7a7933da7a2785e5",
+    "src/obot/robot/behaviors.py": "cec2a979c9dd96789d628745f354641bf3dcf5c9b745213fe452b151211a75c2",
+    "src/obot/robot/controller.py": "cd4520d21b90b6fa949810688a8419f45c4829665e822d74486a20ec0531a684",
+    "src/obot/robot/emotions.py": "5a5eca1c038e441102f1f4353698b05af9fb116e05e9d1f1d60b346c794da5c1",
+    "src/obot/robot/joints.py": "6a012b84e3e1c39156dfa855bce1d45d00ffee1434a75c2719e035265ec7b6e6",
+    "src/obot/server/__init__.py": "9b85873e8f4d15c472a824070bb201446fedd251fa3894f5504c25b7ade150e3",
+    "src/obot/server/server.py": "cc444b83bc52f55ab54070b10e718cb97f62458b25502661143c9c48c97d9b56",
+    "src/obot/server/session.py": "b4db0a67ca0a95ad97da9916b273fc0e6835a01569151ce447a92242ed75e8db",
+    "src/obot/server/voices.py": "143c328b703b66f1faa348c43056e07ae646dd105a9e6a3fca9246ec6c9cf446",
+    "src/obot/sim/__init__.py": "ed8f8b56018ef967c127a33cc9bed34a4dc164a45bd9d5b4170afd6f726f482a",
+    "src/obot/sim/__main__.py": "85c1d45b0d59995c320618065bfb85b27c6b8dfe81893b4cb473747a551ada4f",
+    "src/obot/sim/face.py": "ed5ba515979cba86e269449a95a0c87a47b83698613d15e5f28b832223c19dd7",
+    "src/obot/speech/__init__.py": "65b208913580dcf70973ecfe6fc69553126d4173cca867b7a1c5ef7358ce32b0",
+    "src/obot/speech/config.py": "2c5bd64f486e7c8aaca8f8a6fb8909031f68ec6143f1e216b16e9a0d2a5478f6",
+    "src/obot/speech/engine.py": "ee8720fc8cb900516647ff34ca689de99bdadaf6f6eda2c77233e004e334168e",
+    "src/obot/speech/macos.py": "a0cd79c150388710d794b6f75b0d1a919c566576f372ef49d95a3cb78538e65b",
+    "src/obot/speech/player.py": "c19429d9518dc16c885064620ed629ae0b81dece608935119bf4834dc4f6b572",
+    "src/obot/speech/timeline.py": "a3f3f00e3aea239e502b47867eb5ae3698577b958cce559b6280bb57daf158ed",
+    "src/obot/speech/tts.py": "6877dfb800ecba9844e20db181ea2c10f85f971ba228114beb708eccf3af7a30",
+    "tests/test_installation.py": "f9370cbbaac6dd2b8f2d9dbef6818424a53bac0c33b63d45f6686c77ca43944f",
+    "tests/test_regressions.py": "ba93b2247eeff04ba4ddf6ac7d8a61f299f4b825a0301781a7fc9ca663f4bd85",
+    "tests/test_server_smoke.py": "defe32510226bfb2f314f694e1eee6ad22c0b58c666553b6a841b62453e06d20"
+  },
+  "console": {
+    "exit_code": 0,
+    "stdout": "using console controller\n[speech] Hello friend.\n[action][sim] nod\n[emotion][sim] Happy\n[speech] Goodbye .\n[action][sim] blink\n",
+    "stderr": ""
+  },
+  "running_example_events": [
+    {
+      "kind": "sentence",
+      "payload": "Hello friend.",
+      "metadata": {
+        "actions": "Nod@5",
+        "emotions": "Happy@5"
+      }
+    },
+    {
+      "kind": "sentence",
+      "payload": "Goodbye .",
+      "metadata": {
+        "actions": "Blink@7"
+      }
+    }
+  ],
+  "delay_single_chunk": [
+    {
+      "kind": "sentence",
+      "payload": "Hello world.",
+      "metadata": {
+        "delays": "500@5"
+      }
+    }
+  ],
+  "delay_split_chunk": [
+    {
+      "kind": "sentence",
+      "payload": "Hello world.",
+      "metadata": {
+        "delays": "500@5"
+      }
+    }
+  ],
+  "delay_at_eof": [
+    {
+      "kind": "sentence",
+      "payload": "Hello",
+      "metadata": {
+        "delays": "500@5"
+      }
+    }
+  ],
+  "interruption": {
+    "fake_speaker_emitted": [
+      "First"
+    ],
+    "pipeline_result": {
+      "interrupted": true,
+      "spoken": [],
+      "unspoken": [
+        "First sentence has several words.",
+        "Second sentence."
+      ],
+      "partial": [
+        "First sentence has several words."
+      ]
+    }
+  },
+  "timeline": {
+    "words": [
+      {
+        "text": "hello",
+        "char_start": 0,
+        "char_end": 5,
+        "start_s": 0.0,
+        "end_s": 0.5
+      },
+      {
+        "text": "world",
+        "char_start": 6,
+        "char_end": 11,
+        "start_s": 0.5,
+        "end_s": 1.0
+      }
+    ],
+    "insertion_position_5_maps_to_seconds": 0.5
+  },
+  "envelope_samples": {
+    "0": {
+      "result": []
+    },
+    "100": {
+      "result": [
+        0.0
+      ]
+    },
+    "320": {
+      "result": [
+        0.0
+      ]
+    }
+  },
+  "not_tested": [
+    "hardware",
+    "GUI",
+    "actual audio output",
+    "microphone",
+    "cloud backends",
+    "model inference",
+    "server suite"
+  ]
+}

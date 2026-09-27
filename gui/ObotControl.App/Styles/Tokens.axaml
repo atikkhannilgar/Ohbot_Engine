@@ -1,0 +1,80 @@
+<!--
+  Design tokens for the whole app: one place to change a colour, a radius or a font size.
+  Views must reference these by name and never hardcode a hex value, so the app stays
+  visually consistent and can be re-themed without touching a single view.
+
+  The palette is taken from the robot itself: amber eyes, blue acrylic head, brushed-metal
+  lip plates. Blue is the interactive accent, amber means "attention / in progress".
+-->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!-- ===== Neutrals: a single ramp, darkest to lightest ===== -->
+  <Color x:Key="AppBgColor">#0B0F15</Color>
+  <Color x:Key="SurfaceColor">#121924</Color>
+  <Color x:Key="SurfaceRaisedColor">#1A2331</Color>
+  <Color x:Key="SurfaceHoverColor">#232E3E</Color>
+  <Color x:Key="InsetColor">#0E141C</Color>
+  <Color x:Key="BorderColor">#24303F</Color>
+  <Color x:Key="BorderStrongColor">#33445A</Color>
+
+  <SolidColorBrush x:Key="AppBg" Color="{StaticResource AppBgColor}"/>
+  <SolidColorBrush x:Key="Surface" Color="{StaticResource SurfaceColor}"/>
+  <SolidColorBrush x:Key="SurfaceRaised" Color="{StaticResource SurfaceRaisedColor}"/>
+  <SolidColorBrush x:Key="SurfaceHover" Color="{StaticResource SurfaceHoverColor}"/>
+  <SolidColorBrush x:Key="Inset" Color="{StaticResource InsetColor}"/>
+  <SolidColorBrush x:Key="BorderSubtle" Color="{StaticResource BorderColor}"/>
+  <SolidColorBrush x:Key="BorderStrong" Color="{StaticResource BorderStrongColor}"/>
+
+  <!-- ===== Text ===== -->
+  <SolidColorBrush x:Key="TextPrimary" Color="#E6EDF6"/>
+  <SolidColorBrush x:Key="TextSecondary" Color="#A6B6C9"/>
+  <SolidColorBrush x:Key="TextMuted" Color="#75859A"/>
+  <SolidColorBrush x:Key="TextOnAccent" Color="#FFFFFF"/>
+
+  <!-- ===== Accent (interactive) ===== -->
+  <Color x:Key="AccentColor">#3B82F6</Color>
+  <SolidColorBrush x:Key="Accent" Color="{StaticResource AccentColor}"/>
+  <SolidColorBrush x:Key="AccentHover" Color="#5A96F8"/>
+  <SolidColorBrush x:Key="AccentPressed" Color="#2F6FD6"/>
+  <SolidColorBrush x:Key="AccentText" Color="#7FB2FF"/>
+  <SolidColorBrush x:Key="AccentSoft" Color="#16263D"/>
+
+  <!-- ===== Semantic status ===== -->
+  <SolidColorBrush x:Key="Success" Color="#2EA057"/>
+  <SolidColorBrush x:Key="SuccessSoft" Color="#12291C"/>
+  <SolidColorBrush x:Key="Warning" Color="#E0A040"/>
+  <SolidColorBrush x:Key="WarningSoft" Color="#2C2214"/>
+  <SolidColorBrush x:Key="Danger" Color="#C4483A"/>
+  <SolidColorBrush x:Key="DangerHover" Color="#D45949"/>
+  <SolidColorBrush x:Key="DangerSoft" Color="#2C1714"/>
+  <SolidColorBrush x:Key="Neutral" Color="#5A6270"/>
+
+  <!-- Dimming layer behind the help overlay. -->
+  <SolidColorBrush x:Key="Scrim" Color="#0A0E14" Opacity="0.82"/>
+
+  <!-- Fluent's own accent (focus rings, slider tracks, checkboxes) is driven from the same
+       accent colour above, so the built-in controls match our custom ones. -->
+  <Color x:Key="SystemAccentColor">#3B82F6</Color>
+  <Color x:Key="SystemAccentColorDark1">#2F6FD6</Color>
+  <Color x:Key="SystemAccentColorDark2">#2760BC</Color>
+  <Color x:Key="SystemAccentColorDark3">#1F4E9E</Color>
+
+  <!-- ===== Typography scale ===== -->
+  <!-- Body matches the Fluent default (14) so opting a control in or out of a class
+       never changes its text size unexpectedly. -->
+  <x:Double x:Key="FontSizeDisplay">20</x:Double>
+  <x:Double x:Key="FontSizeTitle">15</x:Double>
+  <x:Double x:Key="FontSizeBody">14</x:Double>
+  <x:Double x:Key="FontSizeSmall">12</x:Double>
+  <x:Double x:Key="FontSizeCaption">11</x:Double>
+
+  <!-- ===== Shape & spacing ===== -->
+  <CornerRadius x:Key="RadiusCard">10</CornerRadius>
+  <CornerRadius x:Key="RadiusControl">6</CornerRadius>
+  <CornerRadius x:Key="RadiusPill">999</CornerRadius>
+  <Thickness x:Key="CardPadding">16</Thickness>
+
+  <FontFamily x:Key="MonoFont">Cascadia Mono,Cascadia Code,Consolas,DejaVu Sans Mono,monospace</FontFamily>
+
+</ResourceDictionary>

@@ -1,0 +1,61 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:ObotControl.Core.ViewModels;assembly=ObotControl.Core"
+             xmlns:core="clr-namespace:ObotControl.Core;assembly=ObotControl.Core"
+             xmlns:views="clr-namespace:ObotControl.App.Views"
+             x:Class="ObotControl.App.Views.PythonSetupView"
+             x:DataType="vm:PythonSetupViewModel" x:CompileBindings="True">
+  <Border Classes="card" ToolTip.Tip="{x:Static core:HelpText.PythonSetupIntro}">
+    <StackPanel Spacing="12">
+
+      <Grid ColumnDefinitions="Auto,*,Auto">
+        <Border Grid.Column="0" Width="24" Height="24" CornerRadius="12" Margin="0,0,10,0"
+                Background="{StaticResource AccentSoft}" VerticalAlignment="Top">
+          <TextBlock Text="1" FontWeight="Bold" FontSize="{StaticResource FontSizeSmall}"
+                     Foreground="{StaticResource AccentText}"
+                     HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Border>
+        <StackPanel Grid.Column="1" Spacing="2">
+          <TextBlock Text="Python environment" Classes="section"/>
+          <TextBlock Text="Uses a Python you already have, or installs a private one for you. No terminal and no admin rights needed."
+                     Classes="hint" TextWrapping="Wrap"/>
+        </StackPanel>
+        <Border Grid.Column="2" Classes="pill" VerticalAlignment="Top" Padding="10,4"
+                Background="{Binding StatusKind, Converter={x:Static views:Converters.PythonStatusBrush}}">
+          <TextBlock Text="{Binding StatusText}" Foreground="White" FontWeight="SemiBold"
+                     FontSize="{StaticResource FontSizeSmall}"/>
+        </Border>
+      </Grid>
+
+      <Border Classes="inset" Padding="10,8" IsVisible="{Binding !IsSupported}"
+              Background="{StaticResource DangerSoft}">
+        <TextBlock Text="Automatic setup isn't available on this platform. See README.md for manual setup."
+                   Foreground="{StaticResource TextPrimary}" TextWrapping="Wrap"/>
+      </Border>
+
+      <StackPanel Spacing="8" IsVisible="{Binding IsSupported}">
+        <TextBlock Text="Interpreter" Classes="label"/>
+        <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+          <ComboBox Grid.Column="0" ItemsSource="{Binding Candidates}" SelectedItem="{Binding SelectedCandidate}"
+                    HorizontalAlignment="Stretch" ToolTip.Tip="{x:Static core:HelpText.PythonCandidatePick}"/>
+          <Button Grid.Column="1" Content="Refresh" Classes="ghost" Command="{Binding RefreshCommand}" Margin="8,0,0,0"
+                  ToolTip.Tip="{x:Static core:HelpText.PythonRefresh}"/>
+          <Button Grid.Column="2" Content="Prepare" Classes="primary" Command="{Binding PrepareCommand}" Margin="8,0,0,0"
+                  ToolTip.Tip="{x:Static core:HelpText.PythonPrepare}"/>
+          <Button Grid.Column="3" Content="Cancel" Classes="ghost" Command="{Binding CancelCommand}" Margin="8,0,0,0"
+                  IsVisible="{Binding IsBusy}"/>
+        </Grid>
+      </StackPanel>
+
+      <StackPanel Spacing="8" IsVisible="{Binding IsBusy}">
+        <ProgressBar Minimum="0" Maximum="100" Value="{Binding Percent}"
+                     IsIndeterminate="{Binding Indeterminate}"/>
+        <Border Classes="inset" Padding="2">
+          <ListBox ItemsSource="{Binding RecentLines}" Height="120" Background="Transparent"
+                   BorderThickness="0" FontFamily="{StaticResource MonoFont}"
+                   FontSize="{StaticResource FontSizeCaption}"/>
+        </Border>
+      </StackPanel>
+    </StackPanel>
+  </Border>
+</UserControl>

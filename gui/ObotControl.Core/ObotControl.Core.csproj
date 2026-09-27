@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    The UI-framework-free brain behind the GUI. Everything that is not an actual
+    XAML view lives here  protocol client, DTOs, services and MVVM view-models 
+    so ObotControl.App stays a thin Avalonia shell and the UI framework remains
+    swappable (docs/gui-plan.md §4).
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Source-generated [ObservableProperty]/[RelayCommand]; works in WinUI and Avalonia. -->
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+  </ItemGroup>
+
+</Project>

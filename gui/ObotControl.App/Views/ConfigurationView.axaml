@@ -1,0 +1,235 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:ObotControl.Core.ViewModels;assembly=ObotControl.Core"
+             xmlns:core="clr-namespace:ObotControl.Core;assembly=ObotControl.Core"
+             x:Class="ObotControl.App.Views.ConfigurationView"
+             x:DataType="vm:ConfigurationViewModel" x:CompileBindings="True">
+  <DockPanel>
+
+    <!-- Pinned action bar: the dirty flag must stay visible while scrolling a long form. -->
+    <Border DockPanel.Dock="Top" Classes="card" Padding="14,10" Margin="0,0,12,12">
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <TextBlock Text="Configuration" Classes="section"/>
+            <Border Classes="pill" Background="{StaticResource WarningSoft}" Padding="8,2"
+                    IsVisible="{Binding IsDirty}" ToolTip.Tip="{x:Static core:HelpText.DirtyFlag}">
+              <TextBlock Text="unsaved changes" Classes="warn" FontSize="{StaticResource FontSizeCaption}"
+                         FontWeight="SemiBold"/>
+            </Border>
+          </StackPanel>
+          <TextBlock Text="{Binding Status}" Classes="hint" Margin="0"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+          <Button Content="Revert" Classes="ghost" Command="{Binding RevertCommand}"
+                  ToolTip.Tip="Discard edits and return to the last-saved values."/>
+          <Button Content="Reload" Classes="ghost" Command="{Binding ReloadCommand}"
+                  IsEnabled="{Binding Connected}" ToolTip.Tip="{x:Static core:HelpText.Reload}"/>
+          <Button Content="Save" Classes="primary" Command="{Binding SaveCommand}"
+                  IsEnabled="{Binding Connected}" ToolTip.Tip="{x:Static core:HelpText.Save}"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+      <StackPanel Spacing="12" Margin="0,0,12,0">
+
+        <!-- ===== Speech ===== -->
+        <Border Classes="card">
+          <StackPanel Spacing="12">
+            <StackPanel Spacing="2">
+              <TextBlock Text="Speech" Classes="section"/>
+              <TextBlock Text="Which voice talks, and how fast." Classes="hint"/>
+            </StackPanel>
+            <Grid ColumnDefinitions="190,*,64" RowDefinitions="Auto,Auto,Auto">
+              <TextBlock Grid.Row="0" Grid.Column="0" Text="Engine chain" Classes="label"/>
+              <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding TtsEngines}" SelectedItem="{Binding TtsEngine}"
+                        HorizontalAlignment="Left" Width="160" Margin="0,0,0,8"
+                        ToolTip.Tip="{x:Static core:HelpText.TtsEngine}"/>
+
+              <TextBlock Grid.Row="1" Grid.Column="0" Text="Piper pace" Classes="label"/>
+              <Slider Grid.Row="1" Grid.Column="1" Minimum="0.6" Maximum="1.4" Value="{Binding PiperLengthScale}"/>
+              <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding PiperLengthScale, StringFormat='0.00'}" Classes="value"/>
+
+              <TextBlock Grid.Row="2" Grid.Column="0" Text="Local voice speed (wpm)" Classes="label"/>
+              <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding LocalRateWpm}" Minimum="80" Maximum="320"
+                             Increment="5" Width="130" HorizontalAlignment="Left"/>
+            </Grid>
+            <TextBox Text="{Binding GeminiStyle}"
+                     Watermark="Gemini style directive (e.g. 'Say this like a British news presenter:')"/>
+          </StackPanel>
+        </Border>
+
+        <!-- ===== Mouth tuning ===== -->
+        <Border Classes="card" ToolTip.Tip="{x:Static core:HelpText.MouthTuning}">
+          <StackPanel Spacing="12">
+            <StackPanel Spacing="2">
+              <StackPanel Orientation="Horizontal" Spacing="10">
+                <TextBlock Text="Mouth tuning" Classes="section"/>
+                <Border Classes="pill" Background="{StaticResource SuccessSoft}" Padding="8,2">
+                  <TextBlock Text="applies live" FontSize="{StaticResource FontSizeCaption}"
+                             FontWeight="SemiBold" Foreground="{StaticResource Success}"/>
+                </Border>
+              </StackPanel>
+              <TextBlock Text="Drag these while the robot is talking changes take effect immediately, no restart."
+                         Classes="hint" TextWrapping="Wrap"/>
+            </StackPanel>
+
+            <!-- Each row pairs a plain-language label with the config.json key it maps to,
+                 so the panel is usable without reading the README first. -->
+            <Grid ColumnDefinitions="190,*,64" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+              <StackPanel Grid.Row="0" Grid.Column="0">
+                <TextBlock Text="Update rate" Classes="label"/>
+                <TextBlock Text="fps" Classes="caption"/>
+              </StackPanel>
+              <Slider Grid.Row="0" Grid.Column="1" Minimum="10" Maximum="60" Value="{Binding Fps}"/>
+              <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding Fps, StringFormat='0'}" Classes="value"/>
+
+              <StackPanel Grid.Row="1" Grid.Column="0">
+                <TextBlock Text="Silence threshold" Classes="label"/>
+                <TextBlock Text="gate" Classes="caption"/>
+              </StackPanel>
+              <Slider Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="0.3" Value="{Binding Gate}"/>
+              <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding Gate, StringFormat='0.00'}" Classes="value"/>
+
+              <StackPanel Grid.Row="2" Grid.Column="0">
+                <TextBlock Text="Quiet-syllable lift" Classes="label"/>
+                <TextBlock Text="gamma" Classes="caption"/>
+              </StackPanel>
+              <Slider Grid.Row="2" Grid.Column="1" Minimum="0.2" Maximum="1.5" Value="{Binding Gamma}"/>
+              <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding Gamma, StringFormat='0.00'}" Classes="value"/>
+
+              <StackPanel Grid.Row="3" Grid.Column="0">
+                <TextBlock Text="Opening speed" Classes="label"/>
+                <TextBlock Text="attack" Classes="caption"/>
+              </StackPanel>
+              <Slider Grid.Row="3" Grid.Column="1" Minimum="0" Maximum="1" Value="{Binding Attack}"/>
+              <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding Attack, StringFormat='0.00'}" Classes="value"/>
+
+              <StackPanel Grid.Row="4" Grid.Column="0">
+                <TextBlock Text="Closing speed" Classes="label"/>
+                <TextBlock Text="release" Classes="caption"/>
+              </StackPanel>
+              <Slider Grid.Row="4" Grid.Column="1" Minimum="0" Maximum="1" Value="{Binding Release}"/>
+              <TextBlock Grid.Row="4" Grid.Column="2" Text="{Binding Release, StringFormat='0.00'}" Classes="value"/>
+
+              <StackPanel Grid.Row="5" Grid.Column="0">
+                <TextBlock Text="Upper lip travel" Classes="label"/>
+                <TextBlock Text="top_gain" Classes="caption"/>
+              </StackPanel>
+              <Slider Grid.Row="5" Grid.Column="1" Minimum="0" Maximum="5" Value="{Binding TopGain}"/>
+              <TextBlock Grid.Row="5" Grid.Column="2" Text="{Binding TopGain, StringFormat='0.0'}" Classes="value"/>
+
+              <StackPanel Grid.Row="6" Grid.Column="0">
+                <TextBlock Text="Lower lip travel" Classes="label"/>
+                <TextBlock Text="bottom_gain" Classes="caption"/>
+              </StackPanel>
+              <Slider Grid.Row="6" Grid.Column="1" Minimum="0" Maximum="5" Value="{Binding BottomGain}"/>
+              <TextBlock Grid.Row="6" Grid.Column="2" Text="{Binding BottomGain, StringFormat='0.0'}" Classes="value"/>
+
+              <StackPanel Grid.Row="7" Grid.Column="0">
+                <TextBlock Text="Upper lip limit" Classes="label"/>
+                <TextBlock Text="top_max_delta" Classes="caption"/>
+              </StackPanel>
+              <Slider Grid.Row="7" Grid.Column="1" Minimum="0" Maximum="5" Value="{Binding TopMaxDelta}"/>
+              <TextBlock Grid.Row="7" Grid.Column="2" Text="{Binding TopMaxDelta, StringFormat='0.0'}" Classes="value"/>
+
+              <StackPanel Grid.Row="8" Grid.Column="0">
+                <TextBlock Text="Lower lip limit" Classes="label"/>
+                <TextBlock Text="bottom_max_delta" Classes="caption"/>
+              </StackPanel>
+              <Slider Grid.Row="8" Grid.Column="1" Minimum="0" Maximum="5" Value="{Binding BottomMaxDelta}"/>
+              <TextBlock Grid.Row="8" Grid.Column="2" Text="{Binding BottomMaxDelta, StringFormat='0.0'}" Classes="value"/>
+
+              <StackPanel Grid.Row="9" Grid.Column="0">
+                <TextBlock Text="Audio sync offset" Classes="label"/>
+                <TextBlock Text="sync_offset_s negative = mouth leads" Classes="caption"/>
+              </StackPanel>
+              <Slider Grid.Row="9" Grid.Column="1" Minimum="-0.3" Maximum="0.3" Value="{Binding SyncOffset}"/>
+              <TextBlock Grid.Row="9" Grid.Column="2" Text="{Binding SyncOffset, StringFormat='0.00'}" Classes="value"/>
+            </Grid>
+          </StackPanel>
+        </Border>
+
+        <!-- ===== Motion ===== -->
+        <Border Classes="card" ToolTip.Tip="{x:Static core:HelpText.Motion}">
+          <StackPanel Spacing="12">
+            <StackPanel Spacing="2">
+              <TextBlock Text="Motion" Classes="section"/>
+              <TextBlock Text="Servo mixer limits. Lower rates are smoother but less responsive."
+                         Classes="hint"/>
+            </StackPanel>
+            <Grid ColumnDefinitions="190,*,64" RowDefinitions="Auto,Auto,Auto,Auto">
+              <StackPanel Grid.Row="0" Grid.Column="0">
+                <TextBlock Text="Mixer tick" Classes="label"/>
+                <TextBlock Text="tick_s seconds per update" Classes="caption"/>
+              </StackPanel>
+              <Slider Grid.Row="0" Grid.Column="1" Minimum="0.02" Maximum="0.2" Value="{Binding TickS}"/>
+              <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding TickS, StringFormat='0.00'}" Classes="value"/>
+
+              <StackPanel Grid.Row="1" Grid.Column="0">
+                <TextBlock Text="Head slew limit" Classes="label"/>
+                <TextBlock Text="rate_limit" Classes="caption"/>
+              </StackPanel>
+              <Slider Grid.Row="1" Grid.Column="1" Minimum="5" Maximum="80" Value="{Binding RateLimit}"/>
+              <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding RateLimit, StringFormat='0'}" Classes="value"/>
+
+              <StackPanel Grid.Row="2" Grid.Column="0">
+                <TextBlock Text="Lip slew limit" Classes="label"/>
+                <TextBlock Text="lip_rate_limit" Classes="caption"/>
+              </StackPanel>
+              <Slider Grid.Row="2" Grid.Column="1" Minimum="50" Maximum="400" Value="{Binding LipRateLimit}"/>
+              <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding LipRateLimit, StringFormat='0'}" Classes="value"/>
+
+              <StackPanel Grid.Row="3" Grid.Column="0">
+                <TextBlock Text="Write threshold" Classes="label"/>
+                <TextBlock Text="write_epsilon" Classes="caption"/>
+              </StackPanel>
+              <Slider Grid.Row="3" Grid.Column="1" Minimum="0.01" Maximum="0.3" Value="{Binding WriteEpsilon}"/>
+              <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding WriteEpsilon, StringFormat='0.00'}" Classes="value"/>
+            </Grid>
+          </StackPanel>
+        </Border>
+
+        <!-- ===== Behaviors ===== -->
+        <Border Classes="card" ToolTip.Tip="{x:Static core:HelpText.Behaviors}">
+          <StackPanel Spacing="12">
+            <StackPanel Spacing="2">
+              <TextBlock Text="Ambient behaviors" Classes="section"/>
+              <TextBlock Text="Idle life: blinking, attentive nods, sway while speaking, wandering eyes."
+                         Classes="hint"/>
+            </StackPanel>
+            <ItemsControl ItemsSource="{Binding BehaviorModules}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:BehaviorModuleViewModel">
+                  <Border Classes="inset" Padding="12" Margin="0,0,0,8">
+                    <Grid ColumnDefinitions="180,*" RowDefinitions="Auto,Auto">
+                      <CheckBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Content="{Binding Title}"
+                                IsChecked="{Binding Enabled}" FontWeight="SemiBold"/>
+                      <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Spacing="6"
+                                  VerticalAlignment="Center">
+                        <TextBlock Text="every" Classes="caption" VerticalAlignment="Center"/>
+                        <NumericUpDown Value="{Binding MinIntervalS}" Minimum="0.2" Maximum="30" Increment="0.5"
+                                       Width="96" ShowButtonSpinner="False"/>
+                        <TextBlock Text="–" Classes="caption" VerticalAlignment="Center"/>
+                        <NumericUpDown Value="{Binding MaxIntervalS}" Minimum="0.2" Maximum="30" Increment="0.5"
+                                       Width="96" ShowButtonSpinner="False"/>
+                        <TextBlock Text="s" Classes="caption" VerticalAlignment="Center"/>
+                      </StackPanel>
+                      <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="8"
+                                  HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <TextBlock Text="intensity" Classes="caption" VerticalAlignment="Center"/>
+                        <Slider Minimum="0" Maximum="1.5" Value="{Binding Intensity}" Width="130"/>
+                        <TextBlock Text="{Binding Intensity, StringFormat='0.0'}" Classes="value" MinWidth="30"/>
+                      </StackPanel>
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </Border>
+      </StackPanel>
+    </ScrollViewer>
+  </DockPanel>
+</UserControl>
