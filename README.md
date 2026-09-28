@@ -2,8 +2,6 @@
 
 This engine connects Gemini or Ollama responses to OhBot speech, named gestures, and expression poses. The desktop application selects the response source and controls the conversation. Scripted replies and screen preview support preparation before a robot session.
 
-This draft declares version 1.0.0. It combines the installation improvements with the paper's recorder, reference settings and regression fixes. License and maintenance details are pending author completion; this draft has not been submitted or published.
-
 ## First run (macOS, Windows, Linux)
 
 You need **Python 3.12** and the **.NET 10 SDK** on your PATH. Open a terminal in this folder (the repository root).
@@ -114,8 +112,5 @@ Choose the configured provider and a known speech backend/voice. `--controller h
 
 Retain exact software/model identifiers, prompts, settings and output. Pin the speech option when voice consistency matters; fallback can change the voice or replace audio with simulated pacing. Preview shows commanded positions without physical feedback. Interruption records distinguish completed and incomplete utterances, but do not identify the exact audible cutoff.
 
-Use supervised physical operation and a stop procedure. Explain transmission of participant text/audio to providers in consent. Motor limits are not a physical safety evaluation. License and maintenance details are pending author completion.
+Use supervised physical operation and a stop procedure. Explain transmission of participant text/audio to providers in consent. Motor limits are not a physical safety evaluation.
 
-## Development and validation tools
-
-AI coding assistance was used for source inspection, installation changes, regression fixes, the recorder and test execution. The recorded checks use scripted inputs and do not establish live-model or physical performance. This draft is prepared for anonymous sharing; personal accounts, local paths and private config are not included.
