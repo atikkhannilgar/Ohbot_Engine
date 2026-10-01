@@ -114,3 +114,5 @@ Retain exact software/model identifiers, prompts, settings and output. Pin the s
 
 Use supervised physical operation and a stop procedure. Explain transmission of participant text/audio to providers in consent. Motor limits are not a physical safety evaluation.
 
+## Acknowledgement
+The original codebase was developed by co-authors anonymised for review. Modifications for the research presented in the accompanying paper were made by an anonymous author. Names and full attribution are withheld for anonymous peer review and will be included in the final public release. We used Claude and Codex to assist with error checking, debugging, writing, and developing portions of the code in this repository.
