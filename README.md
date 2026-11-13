@@ -59,18 +59,18 @@ For a console-only installation, run `python3.12 scripts/setup.py --profile cons
 .venv/bin/python -m unittest discover -s tests -p test_regressions.py -v
 .venv/bin/python -m unittest discover -s tests -p test_installation.py -v
 .venv/bin/python -m unittest discover -s tests -p test_revision_validation.py -v
-.venv/bin/python scripts/capture_demo.py --output revision_support/my-scripted-run.json
+.venv/bin/python scripts/capture_demo.py --output validation-output/my-scripted-run.json
 ```
 
-On Windows replace `.venv/bin/python` with `.venv\Scripts\python.exe`. Expected results: 20 regression tests, four installation tests and ten additional revision checks pass. The two-turn scripted console record contains three sentences, three action events and two expression events. Durations vary; events describe software commands, not measured motor movement.
+On Windows replace `.venv/bin/python` with `.venv\Scripts\python.exe`. Expected results: 20 regression tests, four installation tests and ten additional validation checks pass. The two-turn scripted console record contains three sentences, three action events and two expression events. Durations vary; events describe software commands, not measured motor movement.
 
 To run these three suites and the recorder together, without a robot, microphone or model account:
 
 ```sh
-.venv/bin/python scripts/run_revision_checks.py --output revision_support/reproduced
+.venv/bin/python scripts/run_revision_checks.py --output validation-output
 ```
 
-This command uses the current interpreter and writes logs plus a validation manifest. The installation suite needs permission to bind a temporary loopback socket. See [validation scope and reproduction](docs/validation.md). The bundled [manifest](revision_support/validation_manifest.json) records the actual revision environment and results.
+This command uses the current interpreter and creates the output directory with test logs, a scripted session record and a validation manifest. The manifest records the environment, source hashes and results of that run. The installation suite needs permission to bind a temporary loopback socket. See [validation scope and reproduction](docs/validation.md). These checks establish software behavior; they do not measure acoustic synchronization, physical stop latency or participant outcomes.
 
 The desktop profile also supports:
 
@@ -80,11 +80,11 @@ The desktop profile also supports:
 dotnet test gui/ObotControl.Core.Tests/ObotControl.Core.Tests.csproj
 ```
 
-These optional desktop checks require the desktop dependencies and, for C#, the .NET SDK. The server test uses a scripted virtual session. They were not rerun for this review revision; the bundled validation evidence covers the three Python suites and console recorder above. The original archive referred to unavailable `checks/` records, so those historical desktop/C# outcomes are not presented as reproduced evidence. Requirements and the distinction between historical and revision environments appear in [SOFTWARE-VERSIONS.md](SOFTWARE-VERSIONS.md).
+These optional desktop checks require the desktop dependencies and, for C#, the .NET SDK. The server test uses a scripted virtual session. They run separately from the hardware-free test runner; passing the Python suites does not establish that these desktop checks pass. See [SOFTWARE-VERSIONS.md](SOFTWARE-VERSIONS.md) for dependency requirements and environment information.
 
 ## Connect a model or robot
 
-Gemini needs an API key. Ollama can run on this computer with an empty SSH host, or on a remote server with configured SSH access. Select an exact model available to your account or server. Keep credentials in private `config.json`; do not redistribute it. See [model compatibility and the exact prompt](docs/model_compatibility.md) for demonstrated models, reviewer observations and missing-gesture troubleshooting. Optional SSH and robot dependencies are separate setup choices in the installation guide.
+Gemini needs an API key. Ollama can run on this computer with an empty SSH host, or on a remote server with configured SSH access. Select an exact model available to your account or server. Keep credentials in private `config.json`; do not redistribute it. See [model compatibility and the exact prompt](docs/model_compatibility.md) for model evidence, prompting behavior and missing-gesture troubleshooting. Optional SSH and robot dependencies are separate setup choices in the installation guide.
 
 The desktop selects the provider, voice, microphone mode and controller. Use **virtual** for the on-screen preview, **sim** for the separate Tk face window, or **hardware** for the robot. The same engine and Avalonia desktop target **macOS, Windows and Linux** (see [docs/installation.md](docs/installation.md)). Hardware mode needs an OhBot, a USB/serial connection, and the optional driver stack:
 
@@ -92,7 +92,7 @@ The desktop selects the provider, voice, microphone mode and controller. Use **v
 .venv/bin/python -m pip install -e '.[hardware]'
 ```
 
-On Windows use `.venv\Scripts\python.exe -m pip install -e ".[hardware]"`. Set the serial port under Setup (or `ohbot_port` in private `config.json`): macOS `/dev/cu.usbmodem…`, Linux `/dev/ttyACM0` or `/dev/ttyUSB0`, Windows `COM3` (device manager). The project uses OhBot 2.2; recorded checks in this draft did not use a connected robot as a formal verification claim. See `gui/README.md` and `docs/` for controls. Open-eye LidBlink rest for this build is commanded at **7** on the 0..10 scale (see `gui/README.md`).
+On Windows use `.venv\Scripts\python.exe -m pip install -e ".[hardware]"`. Set the serial port under Setup (or `ohbot_port` in private `config.json`): macOS `/dev/cu.usbmodem…`, Linux `/dev/ttyACM0` or `/dev/ttyUSB0`, Windows `COM3` (device manager). The project uses OhBot 2.2. The hardware-free tests do not validate operation on a connected robot. See `gui/README.md` and `docs/` for controls. Open-eye LidBlink rest for this build is commanded at **7** on the 0..10 scale (see `gui/README.md`).
 
 Mic modes after **Start**: **vad** listens between turns; **ptt** waits for Talk/hotkey; **muted** closes the capture device (not only ignores audio). Pick a microphone in Setup first.
 
@@ -113,7 +113,7 @@ Choose the configured provider and a known speech backend/voice. `--controller h
 
 The [custom-action example](docs/virtual_studies.md#adding-a-custom-action) registers Acknowledge as a nod followed by a blink. `docs/server.md` describes commands and events for other interfaces. The prompt lists supported labels; expression names describe poses, not measured perception.
 
-`src/obot` contains the engine; `gui` the desktop; `mlBehaviour` training/conversion; `docs` guides; `tests` automated checks; `revision_support` recorded revision evidence; `examples` reference inputs/settings. BEAT2 data, saved models, presentations and sample audio are excluded pending redistribution review. They are unnecessary for the label-based example. Optional training requires separately obtained data and your own checkpoint; see `mlBehaviour/README.md`.
+`src/obot` contains the engine; `gui` the desktop; `mlBehaviour` training/conversion; `docs` guides; `tests` automated checks; `examples` reference inputs/settings. BEAT2 data, saved models, presentations and sample audio are not bundled. They are unnecessary for the label-based example. Optional training requires separately obtained data and your own checkpoint; see `mlBehaviour/README.md`.
 
 ## Study use
 
@@ -124,4 +124,4 @@ Retain exact software/model identifiers, prompts, settings and output. Pin the s
 Use supervised physical operation and a stop procedure. Explain transmission of participant text/audio to providers in consent. Motor limits are not a physical safety evaluation.
 
 ## Acknowledgement
-The original codebase was developed by co-authors anonymised for review. Modifications for the research presented in the accompanying paper were made by an anonymous author. Names and full attribution are withheld for anonymous peer review and will be included in the final public release. We used Claude and Codex to assist with error checking, debugging, writing, and developing portions of the code in this repository.
+The software was developed by anonymous contributors. Full contributor attribution will be included in the final public release. We used Claude and Codex to assist with error checking, debugging, writing, and developing portions of the code in this repository.
