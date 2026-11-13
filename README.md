@@ -1,6 +1,6 @@
 # OhBot Behaviour Engine
 
-This engine connects Gemini or Ollama responses to OhBot speech, named gestures, and expression poses. The desktop application selects the response source and controls the conversation. Scripted replies and screen preview support preparation before a robot session.
+This engine connects Gemini or Ollama responses to OhBot speech, named gestures, and expression poses. The desktop application selects the response source and controls the conversation. Scripted replies and the virtual OhBot support both preparation for robot sessions and screen-based user studies without physical hardware. Researchers can compare speech backends, LLMs and configurable expression strategies within the same virtual embodiment; see [the study guide](docs/virtual_studies.md).
 
 ## First run (macOS, Windows, Linux)
 
@@ -58,12 +58,19 @@ For a console-only installation, run `python3.12 scripts/setup.py --profile cons
 .venv/bin/python scripts/run.py --console
 .venv/bin/python -m unittest discover -s tests -p test_regressions.py -v
 .venv/bin/python -m unittest discover -s tests -p test_installation.py -v
-.venv/bin/python checks/reproduce_full_demo.py . checks/reproduced
-.venv/bin/python checks/example_custom_action.py
-.venv/bin/python scripts/capture_demo.py --output checks/my-scripted-run.json
+.venv/bin/python -m unittest discover -s tests -p test_revision_validation.py -v
+.venv/bin/python scripts/capture_demo.py --output revision_support/my-scripted-run.json
 ```
 
-On Windows replace `.venv/bin/python` with `.venv\Scripts\python.exe`. Expected results: the sentence, Happy request and nod; 15 regression tests and four installation tests passing; 20 sentences, 12 action messages and eight expression messages from the nine-scene script; and a completed two-turn record with `live_model: false`. Durations vary. These outputs describe software commands, not measured motor movement.
+On Windows replace `.venv/bin/python` with `.venv\Scripts\python.exe`. Expected results: 20 regression tests, four installation tests and ten additional revision checks pass. The two-turn scripted console record contains three sentences, three action events and two expression events. Durations vary; events describe software commands, not measured motor movement.
+
+To run these three suites and the recorder together, without a robot, microphone or model account:
+
+```sh
+.venv/bin/python scripts/run_revision_checks.py --output revision_support/reproduced
+```
+
+This command uses the current interpreter and writes logs plus a validation manifest. The installation suite needs permission to bind a temporary loopback socket. See [validation scope and reproduction](docs/validation.md). The bundled [manifest](revision_support/validation_manifest.json) records the actual revision environment and results.
 
 The desktop profile also supports:
 
@@ -73,11 +80,11 @@ The desktop profile also supports:
 dotnet test gui/ObotControl.Core.Tests/ObotControl.Core.Tests.csproj
 ```
 
-Expected output: valid desktop imports and `pip check`, `ALL CHECKS PASSED` from the server smoke test, and 33 passing C# tests. The server test uses a scripted virtual session. Recorded versions, commands and results are in `checks/verification.json` and `SOFTWARE-VERSIONS.md`.
+These optional desktop checks require the desktop dependencies and, for C#, the .NET SDK. The server test uses a scripted virtual session. They were not rerun for this review revision; the bundled validation evidence covers the three Python suites and console recorder above. The original archive referred to unavailable `checks/` records, so those historical desktop/C# outcomes are not presented as reproduced evidence. Requirements and the distinction between historical and revision environments appear in [SOFTWARE-VERSIONS.md](SOFTWARE-VERSIONS.md).
 
 ## Connect a model or robot
 
-Gemini needs an API key. Ollama can run on this computer with an empty SSH host, or on a remote server with configured SSH access. Select an exact model available to your account or server. Keep credentials in private `config.json`; do not redistribute it. Optional SSH and robot dependencies are separate setup choices in the installation guide.
+Gemini needs an API key. Ollama can run on this computer with an empty SSH host, or on a remote server with configured SSH access. Select an exact model available to your account or server. Keep credentials in private `config.json`; do not redistribute it. See [model compatibility and the exact prompt](docs/model_compatibility.md) for demonstrated models, reviewer observations and missing-gesture troubleshooting. Optional SSH and robot dependencies are separate setup choices in the installation guide.
 
 The desktop selects the provider, voice, microphone mode and controller. Use **virtual** for the on-screen preview, **sim** for the separate Tk face window, or **hardware** for the robot. The same engine and Avalonia desktop target **macOS, Windows and Linux** (see [docs/installation.md](docs/installation.md)). Hardware mode needs an OhBot, a USB/serial connection, and the optional driver stack:
 
@@ -104,11 +111,13 @@ Choose the configured provider and a known speech backend/voice. `--controller h
 
 ## Extension, files and optional training
 
-`checks/example_custom_action.py` adds Acknowledge as a nod followed by a blink. `docs/server.md` describes commands and events for other interfaces. The prompt lists supported labels; expression names describe poses, not measured perception.
+The [custom-action example](docs/virtual_studies.md#adding-a-custom-action) registers Acknowledge as a nod followed by a blink. `docs/server.md` describes commands and events for other interfaces. The prompt lists supported labels; expression names describe poses, not measured perception.
 
-`src/obot` contains the engine; `gui` the desktop; `mlBehaviour` training/conversion; `docs` guides; `tests` and `checks` tests and records; `examples` reference inputs/settings. BEAT2 data, saved models, presentations and sample audio are excluded pending redistribution review. They are unnecessary for the label-based example. Optional training requires separately obtained data and your own checkpoint; see `mlBehaviour/README.md`.
+`src/obot` contains the engine; `gui` the desktop; `mlBehaviour` training/conversion; `docs` guides; `tests` automated checks; `revision_support` recorded revision evidence; `examples` reference inputs/settings. BEAT2 data, saved models, presentations and sample audio are excluded pending redistribution review. They are unnecessary for the label-based example. Optional training requires separately obtained data and your own checkpoint; see `mlBehaviour/README.md`.
 
 ## Study use
+
+The [virtual study guide](docs/virtual_studies.md) gives gesture, speech, LLM and expression comparisons, explains what to hold fixed, and describes the adapter needed for an external emotion model. These are proposed study designs, not completed participant evaluations.
 
 Retain exact software/model identifiers, prompts, settings and output. Pin the speech option when voice consistency matters; fallback can change the voice or replace audio with simulated pacing. Preview shows commanded positions without physical feedback. Interruption records distinguish completed and incomplete utterances, but do not identify the exact audible cutoff.
 

@@ -1,6 +1,6 @@
 # Software versions and links
 
-This record describes declared version 1.0.0, dated 23 September 2026. Minimum requirements are distinct from versions actually installed.
+The original archive describes declared version 1.0.0, dated 23 September 2026. Minimum requirements are distinct from installed versions. The review revision retains those declarations; its current validation environment is recorded separately in [revision_support/validation_manifest.json](revision_support/validation_manifest.json). Historical environment entries below are inherited documentation, not newly reproduced results.
 
 ## Project and recorded environment
 
@@ -9,8 +9,8 @@ This record describes declared version 1.0.0, dated 23 September 2026. Minimum r
 | Engine and desktop | 1.0.0 (declared) | pyproject.toml; gui/Directory.Build.props |
 | Python package requirement | >=3.12 | pyproject.toml |
 | Setup script | Python 3.12 | scripts/setup.py |
-| Recorded Python | 3.12.1 | checks/environment.json |
-| Recorded OS | macOS 26.4.1, Arm64 | checks/environment.json |
+| Recorded Python | 3.12.1 | Original documentation; underlying environment record absent from supplied archive |
+| Recorded OS | macOS 26.4.1, Arm64 | Original documentation; underlying environment record absent from supplied archive |
 | Recorded .NET SDK / runtime | 10.0.401 / 10.0.12 | Desktop test/build logs |
 | Desktop target | net10.0 | Desktop project files |
 | Avalonia | 11.2.3 | Desktop project file |
@@ -167,8 +167,8 @@ The review examples disable the optional movement model and background movements
 
 ## Check scope and version history
 
-Current checks are under `checks/`: a fresh desktop setup, 15 regression tests, four installation tests, 33 C# tests, the nine-scene console script, the custom action and the two-turn scripted recorder. Separate server and desktop-build logs record their outcomes. Source imports and pip dependency checks passed.
+The revised archive contains 20 existing regression tests, four existing installation tests and ten additional hardware-free checks. Run `scripts/run_revision_checks.py` to reproduce these suites and a two-turn scripted console record; see [docs/validation.md](docs/validation.md). The current environment, source hashes and outcomes are recorded in `revision_support/validation_manifest.json`, with logs alongside it.
 
-No live model, physical robot, captured microphone input or optional trained-model inference was tested in this revision. A previous installation-only branch was opened through the native macOS GUI; that observation is not labeled as a new interactive GUI run of the merged revision. An automated shell can fail to generate local macOS speech and fall back to simulated pacing; see the installation guide.
+The additional checks use synthetic PCM, a controlled playback clock and a single motor-mixer tick with hardware writes collected in memory. They establish software behavior, not acoustic alignment accuracy, physical stop latency or participant outcomes. No live model, physical robot, captured microphone, desktop GUI or optional trained-model inference is exercised by this runner. It uses the supplied Python environment; it does not establish a fresh desktop installation.
 
-The earlier 2026-09-22-r1 records used Python 3.12.14 and NumPy 2.3.5. They remain in the archived paper/review package, separate from these new results. This draft leaves license and maintenance details for author completion. No repository URL or release DOI has been invented.
+The original README referred to 15 regression tests, 33 C# tests, a nine-scene console script and records under an absent `checks/` directory. The current regression suite contains 20 tests. Missing historical records are not treated as evidence for this revision. Original Windows/Linux, desktop build and hardware claims require separate validation on those systems. The declared package version remains 1.0.0; this archive is a review revision, not a claim of a new public release.

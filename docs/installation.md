@@ -36,6 +36,24 @@ The bundle built here contains its own .NET runtime. It is a local source build,
 not a signed distribution or an app that can be moved away from the repository.
 After moving the whole repository, rerun setup and the bundle builder.
 
+### Downloaded app reported as damaged
+
+R1 reported a quarantined browser download showing "is damaged and can't be opened". This was not independently reproduced in the revision checks. `gui/ObotControl.App` is a source project directory; the generated launcher is `dist/OhBot Control.app`.
+
+Prefer launching inspected source with `.venv/bin/python scripts/run.py`, or building the bundle locally with `python3.12 scripts/package_macos.py`. Check archive integrity and provenance before overriding a download warning. For a known and verified bundle, inspect its attributes:
+
+```sh
+xattr "/absolute/path/to/OhBot Control.app"
+```
+
+The reviewer resolved the quarantine case by removing the attribute from that specific bundle:
+
+```sh
+xattr -dr com.apple.quarantine "/absolute/path/to/OhBot Control.app"
+```
+
+Use the actual verified bundle path. This changes the bundle and its contents; do not apply it to an entire Downloads folder or disable Gatekeeper globally. If files are genuinely damaged, reacquire or rebuild the bundle. These commands are documentation only; the revision checks did not change security settings.
+
 ## Windows and Linux
 
 Windows:
@@ -126,7 +144,7 @@ The launcher never kills the process occupying a port or stops Docker containers
   the selected speech backend and any simulated-timing message. The native Mac
   app produced local speech in our check, while the automated shell's standalone
   native-voice checks returned empty audio. For a direct check in your logged-in
-  Mac terminal, run `.venv/bin/python checks/check_macos_voice.py`.
+  Mac session, select a configured speech backend and an installed voice, then send a scripted sentence in virtual mode and inspect the Logs tab. The console profile deliberately produces no speech; a successful console check does not validate audio output.
 
 The launcher keeps its preferences in `.obot/settings.json`. This separates the
 checkout's selected interpreter from other OhBot installations. For a direct

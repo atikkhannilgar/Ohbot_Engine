@@ -1,0 +1,51 @@
+Response mode, prompt and model compatibility
+
+Scripted mode executes the supplied response text and its tags. LLM mode sends
+the input as a user message and executes the model's newly generated response.
+A tag in the user message is not a guaranteed robot command.
+
+system_prompt_exact.txt is an unchanged copy of the repository's system_prompt.txt.
+Its hash is in validation_manifest.json. The exact vocabulary, placement rules,
+example and interruption guidance are therefore available for reproduction.
+The prompt requests labels sparingly when appropriate. No action tag in a reply
+can be valid behavior under that prompt; not every response is meant to gesture.
+
+Observed model evidence:
+- qwen3.5:9b: identifier shown in the supplied GUI and physical demonstration.
+  Qualitative demonstration only; no repeated tag-compliance benchmark.
+- qwen3.5:1.8b: R1 reported a successful virtual trial through Ollama.
+- llama3.2: R1 reported expressions without gestures. Raw replies are unavailable,
+  so omission by the model is a hypothesis, not an established diagnosis.
+- Gemini: implemented response provider; no exact dialogue model or new live
+  provider run is established by the revision checks.
+
+The reviewer observations are not author-run compatibility benchmarks. There is
+no validated minimum model size, model family or complete supported-model list.
+For missing gestures, first inspect the raw response for a recognized action tag,
+then parsed events, then joint overrides and movement-model ownership. Record
+model identifier/digest, prompt hash, generation settings, speech backend/voice,
+configuration and output. Use scripted responses for fixed experimental stimuli.
+
+macOS bundle and quarantine troubleshooting
+
+gui/ObotControl.App is a source project directory, not the compiled launcher.
+Launch inspected source using .venv/bin/python scripts/run.py, or build the app
+locally using python3.12 scripts/package_macos.py. The generated launcher is
+dist/OhBot Control.app; keep it in the repository as the original guide explains.
+
+R1 reported that a browser-downloaded bundle was quarantined and displayed
+"is damaged and can't be opened". That report was not independently reproduced
+in this revision. Check the source and archive integrity before overriding a
+download warning. Prefer rebuilding locally. For a known and verified bundle,
+inspect its attributes with:
+
+xattr "/absolute/path/to/OhBot Control.app"
+
+The reviewer reported resolving the quarantine case with a targeted removal:
+
+xattr -dr com.apple.quarantine "/absolute/path/to/OhBot Control.app"
+
+This removes the quarantine attribute from that bundle and its contents. Use the
+actual verified bundle path; do not disable Gatekeeper globally or apply the
+command to an entire Downloads folder. If the bundle is truly damaged, reacquire
+or rebuild it instead. No security settings were changed during this revision.

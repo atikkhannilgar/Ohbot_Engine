@@ -4,23 +4,26 @@
 
 ## Voices
 
-Pick one with `speech.tts.engine`, or leave it on `"auto"` to chain through the best available:
+Select a backend with `speech.tts.engine`, or use `"auto"` for the implemented fallback order: Edge, Kokoro, Piper, then local speech.
 
-- **Edge** (`edge`): Microsoft's neural voices via `edge-tts`. Online, free, no API key, and the most natural-sounding of the free options (Azure quality: `en-GB-SoniaNeural`, `en-US-AriaNeural`, ...). Unofficial endpoint, needs internet.
-- **Kokoro** (`kokoro`): a small open neural model running fully offline via ONNX. The best local voice, noticeably better than Piper, and faster than real time on CPU. Model (~330 MB) and voices auto-download to `ohbotData/kokoro/` the first time you use it; bundles espeak-ng, so there's nothing to install system-side. British voices `bf_emma`/`bf_alice`, pace via `speed`.
-- **gTTS** (`gtts`): Google Translate TTS. Online, free, no key, decent quality. The "voice" here is really the accent, set via `tld` (`co.uk`, `com`, `com.au`, ...).
-- **Gemini** (`gemini`): very natural, but needs `gemini_api_key`, and the free tier only gives you about 3 requests a minute.
-- **Piper** (`piper`): offline neural TTS, a solid fallback. Voice `en_GB-cori-high`, model auto-downloads to `ohbotData/piper/`. Pace via `length_scale`.
-- **Basic local** (`local`): SAPI/espeak. Robotic, but dependency-free, and always there as a last resort.
+- **Edge** (`edge`): online speech through `edge-tts`.
+- **Kokoro** (`kokoro`): local ONNX inference after model and voice files are available.
+- **gTTS** (`gtts`): online speech; language and accent options are configured separately.
+- **Gemini** (`gemini`): provider speech using the configured API key, model and voice.
+- **Piper** (`piper`): local inference with the configured voice model.
+- **Local** (`local`): macOS `say`, Windows SAPI, or `pyttsx3` on Linux/Raspberry Pi, subject to installed voices and dependencies.
 
-The online voices (edge/gtts) come back as MP3 and get decoded to PCM through `miniaudio`. `"auto"` chains edge → kokoro → piper → local, so you get near-Azure quality when you're online and a solid offline voice when you're not; it basically never fully fails. A voice that's currently failing gets benched for `failure_cooldown_s` so it stops adding a timeout to every sentence.
+Backend quality, availability and timing are not benchmarked by the revision tests. Automatic fallback can change the active voice; if synthesis fails, inspect logs for simulated pacing. For a study, choose an available backend/voice explicitly and record the backend that actually produced each condition. Simulated pacing does not constitute successful speech output.
 
-## Features
+## Timing and interruption
 
-- **Fast output.** The next sentence starts synthesizing while the current one is still playing, so the round-trip to the TTS engine hides behind playback instead of causing a stutter.
-- **Interruption at word boundaries.** Barge-in and SPACE don't cut the audio off mid-phoneme. Playback finishes the word it's currently voicing (plus a small fade) and then goes quiet. Any remaining sentences get dropped, and the LLM is told on its next turn what was actually said and what wasn't.
-- **Lip sync.** The mouth moves based on the real audio: an RMS envelope gets gated, curved and smoothed into lip positions. Every parameter (`gate`, `gamma`, `attack`, `release`, gains, fps, sync offset) lives in `config.json` under `speech.mouth`, and can be tuned live with sliders in the simulator.
-- **Timed actions mid-sentence.** `[Nod]` written between two words fires exactly when that word gets spoken (character position mapped to a word timeline, mapped to the playback clock), not at some guessed fraction of the sentence.
+The engine prepares sentence audio before playback, with at most two synthesis calls active. It estimates the active speech interval from audio levels and allocates word durations using word-length weights. Character offsets from tags select positions on this approximate timeline. This is a heuristic, not forced alignment or measured word-onset accuracy.
+
+Lip movement follows a gated and smoothed RMS audio envelope. Parameters under `speech.mouth` control that mapping. Named actions are dispatched against the playback clock near estimated word positions; their acoustic and physical alignment has not been measured.
+
+An interruption request can stop playback near an estimated word end, suppress later markers and skip remaining sentences. This does not guarantee a phoneme-perfect cutoff and does not necessarily cancel an already dispatched movement. Speech interruption is separate from motor control and is not a physical emergency stop. The response stream drains before the next turn; the audio that triggered an interruption is discarded, so recognition needs a fresh speech onset.
+
+See [validation](validation.md) for synthetic timing and interruption checks and their limits, and [virtual studies](virtual_studies.md) for recording actual audible/visible output.
 
 ## Behavior modules
 

@@ -1,0 +1,17 @@
+Reproduce the revised engine checks
+
+From the engine repository root:
+python3.12 scripts/setup.py --profile console
+.venv/bin/python scripts/run_revision_checks.py --output revision_support/reproduced
+
+On Windows use py -3.12 for setup and .venv\Scripts\python.exe for the runner.
+The runner runs tests/test_regressions.py (20), tests/test_installation.py (4),
+and tests/test_revision_validation.py (10), followed by scripts/capture_demo.py
+in scripted console mode. It needs NumPy and temporary loopback socket access.
+It does not launch a GUI, robot, speech service, microphone or live model.
+
+The bundled evidence is in this folder. Reproduction writes a separate folder
+by default. See docs/validation.md for commands, expected outcomes and limits.
+The actual environment and source hashes appear in validation_manifest.json.
+The engine runtime and system prompt were not modified for this review revision.
+The earlier paper supplement's additional test file now lives under tests/.
