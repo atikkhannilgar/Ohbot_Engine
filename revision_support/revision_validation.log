@@ -1,0 +1,15 @@
+test_expression_bias_follows_predicted_pose (test_revision_validation.MixerChecks.test_expression_bias_follows_predicted_pose) ... ok
+test_manual_override_wins (test_revision_validation.MixerChecks.test_manual_override_wins) ... ok
+test_overlapping_offsets_are_averaged (test_revision_validation.MixerChecks.test_overlapping_offsets_are_averaged) ... ok
+test_predicted_pose_overrides_offsets (test_revision_validation.MixerChecks.test_predicted_pose_overrides_offsets) ... ok
+test_slew_rate_limits_single_tick (test_revision_validation.MixerChecks.test_slew_rate_limits_single_tick) ... ok
+test_targets_are_clamped (test_revision_validation.MixerChecks.test_targets_are_clamped) ... ok
+test_all_two_chunk_splits (test_revision_validation.ParserChecks.test_all_two_chunk_splits) ... ok
+test_markers_dispatch_in_order (test_revision_validation.PlaybackChecks.test_markers_dispatch_in_order) ... ok
+test_stop_boundary_suppresses_future_marker (test_revision_validation.PlaybackChecks.test_stop_boundary_suppresses_future_marker) ... ok
+test_known_synthetic_speech_interval (test_revision_validation.TimelineChecks.test_known_synthetic_speech_interval) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.006s
+
+OK
