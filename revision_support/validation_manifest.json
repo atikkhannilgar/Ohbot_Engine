@@ -1,0 +1,103 @@
+{
+  "verification_date": "2026-11-13T11:46:20.037705+00:00",
+  "python": "3.12.14",
+  "numpy": "2.3.5",
+  "platform": "macOS-26.4.1-arm64-arm-64bit",
+  "scope": "Hardware-free software checks using synthetic PCM, a controlled playback clock and a controlled mixer tick. No live LLM, physical robot, microphone, desktop GUI or acoustic timing measurement. No fresh dependency installation.",
+  "results": {
+    "existing_regression": 20,
+    "installation": 4,
+    "additional_revision": 10,
+    "all_passed": true
+  },
+  "checks": [
+    {
+      "name": "existing_regression",
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_regressions.py",
+        "-v"
+      ],
+      "log": "regression.log",
+      "tests": 20,
+      "expected_tests": 20,
+      "returncode": 0,
+      "passed": true
+    },
+    {
+      "name": "installation",
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_installation.py",
+        "-v"
+      ],
+      "log": "installation.log",
+      "tests": 4,
+      "expected_tests": 4,
+      "returncode": 0,
+      "passed": true
+    },
+    {
+      "name": "additional_revision",
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_revision_validation.py",
+        "-v"
+      ],
+      "log": "revision_validation.log",
+      "tests": 10,
+      "expected_tests": 10,
+      "returncode": 0,
+      "passed": true
+    }
+  ],
+  "scripted_demo": {
+    "returncode": 0,
+    "passed": true,
+    "status": "completed",
+    "turns": 2,
+    "events": {
+      "raw_text": 17,
+      "emotion": 2,
+      "speech": 6,
+      "action": 3
+    },
+    "speech_events": {
+      "spoken": 3,
+      "done": 3
+    }
+  },
+  "hashes": {
+    "src/obot/core/processor.py": "b64b307597241a99cc0b1da172c34a3991b61b6615ca98f31ce7d0b5307653ed",
+    "src/obot/core/orchestrator.py": "b0ecf5764c3e87ec6afbfa42f49872a316abadbb86bc023d30848a16cf0ca403",
+    "src/obot/robot/controller.py": "4461087e2fbc806b88764cfe479404309ebd042e6bcf5789e8c52b149f3b4e13",
+    "src/obot/speech/engine.py": "ee8720fc8cb900516647ff34ca689de99bdadaf6f6eda2c77233e004e334168e",
+    "src/obot/speech/timeline.py": "a3f3f00e3aea239e502b47867eb5ae3698577b958cce559b6280bb57daf158ed",
+    "tests/test_regressions.py": "826645782cb77f2488196069ed2aa86922204b069716f20927d38e0efa29907f",
+    "tests/test_installation.py": "f9370cbbaac6dd2b8f2d9dbef6818424a53bac0c33b63d45f6686c77ca43944f",
+    "tests/test_revision_validation.py": "b0f75b96d7c79ad721e267db27ce8eea543e17ca9fde86b277b67499b2979671",
+    "scripts/run_revision_checks.py": "ee4d692f56529c2d1bae7ec1b94800fede9ccfdfc6e45944c652c1bccd6bbc9d",
+    "scripts/capture_demo.py": "ff58d6ae02e6c2bc4ea8d885e3de0b2b7000bb7a2cd79e8459ff515118ab1e03",
+    "system_prompt.txt": "a4d57c58209979a7ac420fdd9307a39b584f1a3afcdb40145a857e782b1022c1",
+    "examples/demo-inputs.json": "bb6c9711db344ad464cafa22d3fcb590ad64fdc6b8f960a8fdf8f302c8e84fe7",
+    "examples/config.reference.json": "e4168fe034ed16a807ce9b2de36857f6a5cc5215422e4261dcbf6cae800e08ff"
+  }
+}
